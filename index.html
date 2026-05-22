@@ -211,8 +211,6 @@ async function submitMission(){
 
   try {
 
-    alert("เริ่ม submitMission");
-
     const file = document.getElementById("imageUpload").files[0];
 
     if(!file){
@@ -220,61 +218,72 @@ async function submitMission(){
       return;
     }
 
-    alert(file.name);
-
     const reader = new FileReader();
 
-    reader.onloadend = async function(){
+    reader.onload = function(event){
 
-      try {
+      const img = new Image();
 
-        alert("อ่านรูปเสร็จแล้ว");
+      img.onload = async function(){
 
-        const base64Data = reader.result.split(",")[1];
+        const canvas = document.createElement("canvas");
 
-        alert("กำลังส่งไป Apps Script");
+        const maxWidth = 800;
+        const scale = maxWidth / img.width;
 
-        const response = await fetch(GAS_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain"
-          },
-          body: JSON.stringify({
-                  action: "getMission",
-                  userId: currentUserId
-                    })
-        });
+        canvas.width = maxWidth;
+        canvas.height = img.height * scale;
 
-        alert("ได้ response แล้ว");
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const text = await response.text();
+        const resizedBase64 = canvas
+          .toDataURL("image/jpeg", 0.7)
+          .split(",")[1];
 
-        alert(text);
+        try {
 
-        const result = JSON.parse(text);
+          const response = await fetch(GAS_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "text/plain"
+            },
+            body: JSON.stringify({
+              action: "submitMission",
+              userId: currentUserId,
+              displayName: currentDisplayName,
+              mission: document.getElementById("missionBox").innerText,
+              fileName: "mission.jpg",
+              base64Data: resizedBase64
+            })
+          });
 
-        if(result.status == "mission_submitted"){
+          const text = await response.text();
+          const result = JSON.parse(text);
 
-          alert(
-            "🎉 ส่งภารกิจสำเร็จ!\n" +
-            "คะแนนปัจจุบัน: " + result.score
-          );
+          if(result.status == "mission_submitted"){
 
-          loadLeaderboard();
-          loadUserScore();
-          loadAdminDashboard();
+            alert("🎉 ส่งภารกิจสำเร็จ! คะแนน: " + result.score);
 
-        } else {
+            loadLeaderboard();
+            loadUserScore();
+            loadAdminDashboard();
 
-          alert("เกิดข้อผิดพลาด: " + result.status);
+          }else{
+
+            alert("เกิดข้อผิดพลาด: " + result.status);
+
+          }
+
+        } catch(error){
+
+          alert("ส่งข้อมูลไม่สำเร็จ: " + error.message);
 
         }
 
-      } catch(error){
+      };
 
-        alert("ERROR INSIDE: " + error.message);
-
-      }
+      img.src = event.target.result;
 
     };
 
@@ -282,12 +291,11 @@ async function submitMission(){
 
   } catch(error){
 
-    alert("MAIN ERROR: " + error.message);
+    alert("เกิดข้อผิดพลาด: " + error.message);
 
   }
 
 }
-
 async function loadMission(){
 
   const response = await fetch(GAS_URL, {
