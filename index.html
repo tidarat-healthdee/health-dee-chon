@@ -208,71 +208,7 @@ console.log(currentUserId, currentDisplayName);
 
     main();
 function submitMission(){
-alert("เริ่ม submitMission");
-
-  const file = document.getElementById("imageUpload").files[0];
-    alert(file.name);
-
-  if(!file){
-    alert("กรุณาเลือกรูปก่อน");
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.onloadend = async function(){
-    alert("อ่านรูปเสร็จแล้ว");
-
-    const base64Data = reader.result.split(",")[1];
-        alert("กำลังส่งไป Apps Script");
-
-try {
-
-  const response = await fetch(GAS_URL, {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "text/plain"
-    },
-    body: JSON.stringify({
-      action: "submitMission",
-      userId: currentUserId,
-      displayName: currentDisplayName,
-      mission: document.getElementById("missionBox").innerText,
-      fileName: file.name,
-      base64Data: base64Data
-    })
-  });
-
-  alert("ได้ response แล้ว");
-
-  const text = await response.text();
-
-  alert(text);
-
-  const result = JSON.parse(text);
-
-  alert(JSON.stringify(result));
-
-  if(result.status == "mission_submitted"){
-    alert(
-      "🎉 ส่งภารกิจสำเร็จ!\n" +
-      "คะแนนปัจจุบัน: " + result.score
-    );
-
-    loadLeaderboard();
-    loadUserScore();
-    loadAdminDashboard();
-  }
-
-} catch(error) {
-
-  alert("FETCH ERROR: " + error.message);
-
-}
-
-  reader.readAsDataURL(file);
-
+  alert("ระบบส่งภารกิจยังปิดชั่วคราว");
 }
 async function loadMission(){
 
