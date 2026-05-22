@@ -244,6 +244,7 @@ async function submitMission(){
         try {
 
           await fetch(GAS_URL, {
+           method: "POST",
            mode: "no-cors",
             headers: {
               "Content-Type": "text/plain"
