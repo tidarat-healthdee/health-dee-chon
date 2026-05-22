@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+  body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#fff8f0;
+    color:#333;
+  }
+
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    padding:20px;
+    padding-bottom:40px;
+  }
+
+  .hero{
+    background:linear-gradient(135deg,#fff,#ffe0b2);
+    border-radius:28px;
+    padding:24px;
+    box-shadow:0 8px 24px rgba(255,152,0,0.18);
+    margin-bottom:20px;
+  }
+
+  .title{
+    font-size:28px;
+    font-weight:bold;
+    color:#e67e00;
+  }
+
+  .card{
+    background:white;
+    border-radius:24px;
+    padding:20px;
+    margin-top:16px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  }
+
+  button{
+    width:100%;
+    border:none;
+    border-radius:18px;
+    padding:16px;
+    background:#ff9800;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+  }
+
+  input{
+    width:100%;
+    margin-top:12px;
+  }
+
+  hr{
+    border:none;
+    height:1px;
+    background:#f3d7b6;
+    margin:24px 0;
+  }
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="hero">
+
+  <div class="title">
+    Health Dee CHON
+  </div>
+
+  <div style="margin-top:8px;font-size:16px;">
+    Wellness Challenge Platform
+  </div>
+
+  <div id="status" style="margin-top:18px;"></div>
+<div class="card" style="margin-top:16px;">
+
+  <div style="font-size:18px;">คะแนนของคุณ</div>
+
+  <div id="myPoints" style="font-size:36px;font-weight:bold;color:#ff9800;">
+    0
+  </div>
+
+  <div id="myStreak" style="font-size:18px;">
+    🔥 0 Day Streak
+  </div>
+
+<div id="myFreeze" style="font-size:18px;margin-top:6px;">
+  🧊 Streak Freeze: 0
+</div>
+
+<div id="myLevel" style="margin-top:12px;font-weight:bold;">
+  Level: Beginner
+</div>
+
+<div style="background:#ffe0b2;border-radius:20px;margin-top:8px;height:14px;">
+  <div id="progressBar" style="
+    background:#ff9800;
+    width:0%;
+    height:14px;
+    border-radius:20px;
+  "></div>
+</div>
+
+<div id="progressText" style="font-size:13px;margin-top:6px;color:#777;">
+  0 / 100 คะแนน
+</div>
+<div id="badgeBox" style="margin-top:14px;font-size:15px;">
+  กำลังโหลด Badge...
+</div>
+
+</div>
+
+</div>
+
+<hr>
+
+<div class="card">
+
+<h3>ภารกิจวันนี้</h3>
+
+<div id="missionBox">กำลังโหลดภารกิจ...</div>
+
+<br>
+
+<input type="file" id="imageUpload" accept="image/*">
+
+<br><br>
+
+<button onclick="alert('ปุ่มทำงาน'); submitMission();">
+  ส่งภารกิจ
+</button>
+</div>
+<hr>
+
+<h3>อันดับในบริษัท</h3>
+
+<div id="leaderboardBox">
+  กำลังโหลดอันดับ...
+</div>
+<hr>
+
+<h3>Admin Dashboard</h3>
+
+<div id="adminDashboard">
+  กำลังโหลดข้อมูล...
+</div>
+</div>
+
+  <script>
+    const LIFF_ID = "2010154691-Lfwg705W";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
+let currentUserId = "";
+let currentDisplayName = "";
+
+    async function main(){
+
+      const status = document.getElementById("status");
+
+      try{
+
+        status.innerText = "กำลังเชื่อมต่อ LINE...";
+
+        await liff.init({ liffId: LIFF_ID });
+
+        if(!liff.isLoggedIn()){
+          liff.login();
+          return;
+        }
+
+        const profile = await liff.getProfile();
+currentUserId = profile.userId;
+currentDisplayName = profile.displayName;
+await fetch(GAS_URL, {
+  method: "POST",
+  body: JSON.stringify({
+  action: "registerUser",
+  userId: profile.userId,
+  displayName: profile.displayName,
+  pictureUrl: profile.pictureUrl,
+  companyCode: "ABC"
+})
+});
+
+        status.innerHTML =
+          "สวัสดีคุณ " + profile.displayName + "<br><br>" +
+          "LINE User ID:<br>" + profile.userId;
+
+loadMission();
+loadLeaderboard();
+loadUserScore();
+loadAdminDashboard();
+console.log(currentUserId, currentDisplayName);
+
+      }catch(error){
+
+        status.innerText = "ERROR: " + error.message;
+
+      }
+
+    }
+
+    main();
+function submitMission(){
+alert("เริ่ม submitMission");
+
+  const file = document.getElementById("imageUpload").files[0];
+    alert(file.name);
+
+  if(!file){
+    alert("กรุณาเลือกรูปก่อน");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onloadend = async function(){
+    alert("อ่านรูปเสร็จแล้ว");
+
+    const base64Data = reader.result.split(",")[1];
+        alert("กำลังส่งไป Apps Script");
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "submitMission",
+        userId: currentUserId,
+        displayName: currentDisplayName,
+        mission: document.getElementById("missionBox").innerText,
+        fileName: file.name,
+        base64Data: base64Data
+      })
+    });
+
+    const result = await response.json();
+        alert(JSON.stringify(result));
+        console.log(result);
+        alert(JSON.stringify(result));
+
+    if(result.status == "mission_submitted"){
+      alert(
+  "🎉 ส่งภารกิจสำเร็จ!\n" +
+  "คะแนนปัจจุบัน: " + result.score + "\n\n" +
+  "🎁 Lucky Box: " + result.reward.text
+);
+loadLeaderboard();
+loadUserScore();
+loadAdminDashboard();
+    }else{
+      alert("เกิดข้อผิดพลาด: " + result.status);
+    }
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
+async function loadMission(){
+
+  const response = await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({
+  action: "getMission",
+  userId: currentUserId
+})
+  });
+
+  const data = await response.json();
+
+  document.getElementById("missionBox").innerText =
+  "สัปดาห์ที่ " + data.week + " : " + data.mission;
+
+}
+async function loadLeaderboard(){
+
+  const response = await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "getCompanyLeaderboard",
+      userId: currentUserId
+    })
+  });
+
+  const data = await response.json();
+
+  let html = "";
+
+  for(let i = 0; i < data.leaderboard.length; i++){
+
+    html += "#" + (i + 1) + " " +
+      data.leaderboard[i].name + " - " +
+      data.leaderboard[i].points + " คะแนน<br>";
+
+  }
+
+  document.getElementById("leaderboardBox").innerHTML = html;
+
+}
+async function loadAdminDashboard(){
+
+  const response = await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "getAdminDashboard"
+    })
+  });
+
+  const data = await response.json();
+
+  document.getElementById("adminDashboard").innerHTML =
+    "จำนวนผู้เข้าร่วม: " + data.dashboard.totalUsers + " คน<br>" +
+    "จำนวนการส่งภารกิจ: " + data.dashboard.totalSubmissions + " ครั้ง<br>" +
+    "คะแนนรวมทั้งหมด: " + data.dashboard.totalPoints + " คะแนน";
+
+}
+async function loadUserScore(){
+
+  const response = await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "getUserScore",
+      userId: currentUserId
+    })
+  });
+
+  const data = await response.json();
+
+  document.getElementById("myPoints").innerText =
+    data.score.points;
+
+  document.getElementById("myStreak").innerText =
+    "🔥 " + data.score.streak + " Day Streak";
+document.getElementById("myFreeze").innerText =
+  "🧊 Streak Freeze: " + data.score.freeze;
+updateLevel(Number(data.score.points));
+updateBadges(Number(data.score.points), Number(data.score.streak));
+
+}
+function updateLevel(points){
+
+  let level = "Beginner";
+  let nextGoal = 100;
+
+  if(points >= 600){
+    level = "Health Champion";
+    nextGoal = 1000;
+  }else if(points >= 300){
+    level = "Wellness Hero";
+    nextGoal = 600;
+  }else if(points >= 100){
+    level = "Healthy Starter";
+    nextGoal = 300;
+  }
+
+  let percent = Math.min((points / nextGoal) * 100, 100);
+
+  document.getElementById("myLevel").innerText =
+    "Level: " + level;
+
+  document.getElementById("progressBar").style.width =
+    percent + "%";
+
+  document.getElementById("progressText").innerText =
+    points + " / " + nextGoal + " คะแนน";
+
+}
+function updateBadges(points, streak){
+
+  let badges = [];
+
+  if(points >= 100){
+    badges.push("🌱 Healthy Starter");
+  }
+
+  if(points >= 300){
+    badges.push("🥗 Wellness Hero");
+  }
+
+  if(points >= 600){
+    badges.push("🏆 Health Champion");
+  }
+
+  if(streak >= 3){
+    badges.push("🔥 ไฟลุก 3 วัน");
+  }
+
+  if(streak >= 7){
+    badges.push("🔥🔥 ไฟลุก 7 วัน");
+  }
+
+  if(badges.length == 0){
+    badges.push("เริ่มสะสม Badge แรกกันเลย!");
+  }
+
+  document.getElementById("badgeBox").innerHTML =
+    badges.join("<br>");
+
+}
+  </script>
+</div>
+</body>
+</html>
