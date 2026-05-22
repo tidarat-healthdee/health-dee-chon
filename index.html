@@ -240,13 +240,9 @@ async function submitMission(){
             "Content-Type": "text/plain"
           },
           body: JSON.stringify({
-            action: "submitMission",
-            userId: currentUserId,
-            displayName: currentDisplayName,
-            mission: document.getElementById("missionBox").innerText,
-            fileName: file.name,
-            base64Data: base64Data
-          })
+                  action: "getMission",
+                  userId: currentUserId
+                    })
         });
 
         alert("ได้ response แล้ว");
