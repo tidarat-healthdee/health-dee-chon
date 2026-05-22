@@ -225,37 +225,51 @@ alert("เริ่ม submitMission");
 
     const base64Data = reader.result.split(",")[1];
         alert("กำลังส่งไป Apps Script");
-    const response = await fetch(GAS_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "submitMission",
-        userId: currentUserId,
-        displayName: currentDisplayName,
-        mission: document.getElementById("missionBox").innerText,
-        fileName: file.name,
-        base64Data: base64Data
-      })
-    });
 
-    const result = await response.json();
-        alert(JSON.stringify(result));
-        console.log(result);
-        alert(JSON.stringify(result));
+try {
 
-    if(result.status == "mission_submitted"){
-      alert(
-  "🎉 ส่งภารกิจสำเร็จ!\n" +
-  "คะแนนปัจจุบัน: " + result.score + "\n\n" +
-  "🎁 Lucky Box: " + result.reward.text
-);
-loadLeaderboard();
-loadUserScore();
-loadAdminDashboard();
-    }else{
-      alert("เกิดข้อผิดพลาด: " + result.status);
-    }
+  const response = await fetch(GAS_URL, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "text/plain"
+    },
+    body: JSON.stringify({
+      action: "submitMission",
+      userId: currentUserId,
+      displayName: currentDisplayName,
+      mission: document.getElementById("missionBox").innerText,
+      fileName: file.name,
+      base64Data: base64Data
+    })
+  });
 
-  };
+  alert("ได้ response แล้ว");
+
+  const text = await response.text();
+
+  alert(text);
+
+  const result = JSON.parse(text);
+
+  alert(JSON.stringify(result));
+
+  if(result.status == "mission_submitted"){
+    alert(
+      "🎉 ส่งภารกิจสำเร็จ!\n" +
+      "คะแนนปัจจุบัน: " + result.score
+    );
+
+    loadLeaderboard();
+    loadUserScore();
+    loadAdminDashboard();
+  }
+
+} catch(error) {
+
+  alert("FETCH ERROR: " + error.message);
+
+}
 
   reader.readAsDataURL(file);
 
