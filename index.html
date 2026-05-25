@@ -229,12 +229,17 @@ async function main(){
       })
     });
 
-    setTimeout(function(){
-      loadMission();
-      loadLeaderboard();
-      loadUserScore();
-      loadAdminDashboard();
-    }, 1000);
+    setTimeout(async function(){
+
+  await loadMission();
+
+  await loadUserScore();
+
+  await loadLeaderboard();
+
+  await loadAdminDashboard();
+
+}, 1000);
 
   }catch(error){
     status.innerText = "ERROR: " + error.message;
