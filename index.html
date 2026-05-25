@@ -263,41 +263,29 @@ async function submitMission(){
             })
           });
 
+img.src = event.target.result;
 
-          alert("🎉 ส่งภารกิจสำเร็จ! คะแนน: " + result.score);
-
-     if(result.badge){
-  document.getElementById("myBadge").innerText =
-    "🏅 Badge: " + result.badge;
-}
+          alert("🎉 ส่งภารกิจแล้ว");
 
 document.getElementById("imageUpload").value = "";
 
-loadLeaderboard();
-loadUserScore();
-loadAdminDashboard();
+setTimeout(function(){
+  loadLeaderboard();
+  loadUserScore();
+  loadAdminDashboard();
+}, 1500);
 
-        } catch(error){
 
-          alert("ส่งข้อมูลไม่สำเร็จ: " + error.message);
+};
 
-        }
+reader.readAsDataURL(file);
 
-      };
+} catch(error){
 
-      img.src = event.target.result;
-
-    };
-
-    reader.readAsDataURL(file);
-
-  } catch(error){
-
-    alert("เกิดข้อผิดพลาด: " + error.message);
-
-  }
+  alert("เกิดข้อผิดพลาด: " + error.message);
 
 }
+
 async function loadMission(){
 
   const response = await fetch(GAS_URL, {
