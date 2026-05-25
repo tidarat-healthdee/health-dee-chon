@@ -296,20 +296,33 @@ async function submitMission(){
 
 async function loadMission(){
 
-  const response = await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({
-  action: "getMission",
-  userId: currentUserId
-})
-  });
+  try{
 
-  const data = await response.json();
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain"
+      },
+      body: JSON.stringify({
+        action: "getMission",
+        userId: currentUserId
+      })
+    });
 
-  document.getElementById("missionBox").innerText =
-  "สัปดาห์ที่ " + data.week + " : " + data.mission;
+    const data = await response.json();
+
+    document.getElementById("missionBox").innerText =
+      "สัปดาห์ที่ " + data.week + " : " + data.mission;
+
+  }catch(error){
+
+    document.getElementById("missionBox").innerText =
+      "โหลดภารกิจไม่ได้: " + error.message;
+
+  }
 
 }
+
 async function loadLeaderboard(){
 
   const response = await fetch(GAS_URL, {
