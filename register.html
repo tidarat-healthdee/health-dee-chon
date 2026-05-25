@@ -122,6 +122,19 @@ button{
 
 <input type="tel" id="phone" placeholder="เบอร์โทรศัพท์">
 
+<select id="departmentGroup" onchange="toggleOtherDepartment()">
+  <option value="">เลือกกลุ่มงาน/ฝ่ายหลัก</option>
+  <option>บริหาร/อำนวยการ</option>
+  <option>ทรัพยากรบุคคล</option>
+  <option>การเงิน/บัญชี</option>
+  <option>ผลิต/ปฏิบัติการ</option>
+  <option>คลังสินค้า/โลจิสติกส์</option>
+  <option>ขาย/บริการลูกค้า</option>
+  <option>อื่นๆ</option>
+</select>
+
+<input type="text" id="departmentOther" placeholder="ระบุแผนก/หน่วยงาน" style="display:none;">
+
 <button onclick="nextStep(2)">
 ถัดไป
 </button>
@@ -264,7 +277,10 @@ async function submitRegister(){
       age: document.getElementById("age").value,
       gender: document.getElementById("gender").value,
       phone: document.getElementById("phone").value,
-      department: "",
+      department:
+  document.getElementById("departmentGroup").value == "อื่นๆ"
+  ? document.getElementById("departmentOther").value
+  : document.getElementById("departmentGroup").value,
       weight: weight,
       height: height,
       bmi: bmi.toFixed(2),
@@ -284,6 +300,20 @@ async function submitRegister(){
 }
 
 initRegister();
+
+function toggleOtherDepartment(){
+
+  const group = document.getElementById("departmentGroup").value;
+  const otherBox = document.getElementById("departmentOther");
+
+  if(group == "อื่นๆ"){
+    otherBox.style.display = "block";
+  }else{
+    otherBox.style.display = "none";
+    otherBox.value = "";
+  }
+
+}
   
 </script>
 
