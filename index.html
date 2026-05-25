@@ -158,12 +158,39 @@
 </div>
 
   <script>
-    const LIFF_ID = "2010154691-Lfwg705W";
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
+const LIFF_ID = "2010154691-Lfwg705W";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
+
 let currentUserId = "";
 let currentDisplayName = "";
 
-    async function main(){
+function jsonp(action, params = {}){
+
+  return new Promise(function(resolve){
+
+    const callbackName = "callback_" + Date.now();
+
+    window[callbackName] = function(data){
+      resolve(data);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    let url = GAS_URL + "?action=" + action + "&callback=" + callbackName;
+
+    for(const key in params){
+      url += "&" + key + "=" + encodeURIComponent(params[key]);
+    }
+
+    const script = document.createElement("script");
+    script.src = url;
+    document.body.appendChild(script);
+
+  });
+
+}
+
+async function main(){
 
   const status = document.getElementById("status");
 
@@ -187,7 +214,6 @@ let currentDisplayName = "";
       "สวัสดีคุณ " + profile.displayName + "<br><br>" +
       "LINE User ID:<br>" + profile.userId;
 
-    // สมัคร user แบบไม่รอผลกลับ
     fetch(GAS_URL, {
       method: "POST",
       mode: "no-cors",
@@ -211,14 +237,71 @@ let currentDisplayName = "";
     }, 1000);
 
   }catch(error){
-
     status.innerText = "ERROR: " + error.message;
-
   }
 
 }
 
-    main();
+async function loadMission(){
+
+  const data = await jsonp("getMission", {
+    userId: currentUserId
+  });
+
+  document.getElementById("missionBox").innerText =
+    "สัปดาห์ที่ " + data.week + " : " + data.mission;
+
+}
+
+async function loadUserScore(){
+
+  const data = await jsonp("getUserScore", {
+    userId: currentUserId
+  });
+
+  document.getElementById("myPoints").innerText =
+    data.score.points;
+
+  document.getElementById("myStreak").innerText =
+    "🔥 " + data.score.streak + " Day Streak";
+
+  document.getElementById("myFreeze").innerText =
+    "🧊 Streak Freeze: " + data.score.freeze;
+
+  updateLevel(Number(data.score.points));
+  updateBadges(Number(data.score.points), Number(data.score.streak));
+
+}
+
+async function loadLeaderboard(){
+
+  const data = await jsonp("getCompanyLeaderboard", {
+    userId: currentUserId
+  });
+
+  let html = "";
+
+  for(let i = 0; i < data.leaderboard.length; i++){
+    html += "#" + (i + 1) + " " +
+      data.leaderboard[i].name + " - " +
+      data.leaderboard[i].points + " คะแนน<br>";
+  }
+
+  document.getElementById("leaderboardBox").innerHTML = html;
+
+}
+
+async function loadAdminDashboard(){
+
+  const data = await jsonp("getAdminDashboard");
+
+  document.getElementById("adminDashboard").innerHTML =
+    "จำนวนผู้เข้าร่วม: " + data.dashboard.totalUsers + " คน<br>" +
+    "จำนวนการส่งภารกิจ: " + data.dashboard.totalSubmissions + " ครั้ง<br>" +
+    "คะแนนรวมทั้งหมด: " + data.dashboard.totalPoints + " คะแนน";
+
+}
+
 async function submitMission(){
 
   const file = document.getElementById("imageUpload").files[0];
@@ -250,39 +333,31 @@ async function submitMission(){
         .toDataURL("image/jpeg", 0.7)
         .split(",")[1];
 
-      try {
+      await fetch(GAS_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain"
+        },
+        body: JSON.stringify({
+          action: "submitMission",
+          userId: currentUserId,
+          displayName: currentDisplayName,
+          mission: document.getElementById("missionBox").innerText,
+          fileName: "mission.jpg",
+          base64Data: resizedBase64
+        })
+      });
 
-        await fetch(GAS_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "text/plain"
-          },
-          body: JSON.stringify({
-            action: "submitMission",
-            userId: currentUserId,
-            displayName: currentDisplayName,
-            mission: document.getElementById("missionBox").innerText,
-            fileName: "mission.jpg",
-            base64Data: resizedBase64
-          })
-        });
+      alert("🎉 ส่งภารกิจแล้ว");
 
-        alert("🎉 ส่งภารกิจแล้ว");
+      document.getElementById("imageUpload").value = "";
 
-        document.getElementById("imageUpload").value = "";
-
-        setTimeout(function(){
-          loadLeaderboard();
-          loadUserScore();
-          loadAdminDashboard();
-        }, 1500);
-
-      } catch(error){
-
-        alert("ส่งข้อมูลไม่สำเร็จ: " + error.message);
-
-      }
+      setTimeout(function(){
+        loadLeaderboard();
+        loadUserScore();
+        loadAdminDashboard();
+      }, 1500);
 
     };
 
@@ -293,108 +368,7 @@ async function submitMission(){
   reader.readAsDataURL(file);
 
 }
-function jsonp(action, params = {}){
 
-  return new Promise(function(resolve){
-
-    const callbackName = "callback_" + Date.now();
-
-    window[callbackName] = function(data){
-      resolve(data);
-      delete window[callbackName];
-      script.remove();
-    };
-
-    let url = GAS_URL + "?action=" + action + "&callback=" + callbackName;
-
-    for(const key in params){
-      url += "&" + key + "=" + encodeURIComponent(params[key]);
-    }
-
-    const script = document.createElement("script");
-    script.src = url;
-    document.body.appendChild(script);
-
-  });
-
-}
-
-async function loadMission(){
-
-  const data = await jsonp("getMission", {
-    userId: currentUserId
-  });
-
-  document.getElementById("missionBox").innerText =
-    "สัปดาห์ที่ " + data.week + " : " + data.mission;
-
-}
-
-async function loadLeaderboard(){
-
-  const response = await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "getCompanyLeaderboard",
-      userId: currentUserId
-    })
-  });
-
-  const data = await response.json();
-
-  let html = "";
-
-  for(let i = 0; i < data.leaderboard.length; i++){
-
-    html += "#" + (i + 1) + " " +
-      data.leaderboard[i].name + " - " +
-      data.leaderboard[i].points + " คะแนน<br>";
-
-  }
-
-  document.getElementById("leaderboardBox").innerHTML = html;
-
-}
-async function loadAdminDashboard(){
-
-  const response = await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "getAdminDashboard"
-    })
-  });
-
-  const data = await response.json();
-
-  document.getElementById("adminDashboard").innerHTML =
-    "จำนวนผู้เข้าร่วม: " + data.dashboard.totalUsers + " คน<br>" +
-    "จำนวนการส่งภารกิจ: " + data.dashboard.totalSubmissions + " ครั้ง<br>" +
-    "คะแนนรวมทั้งหมด: " + data.dashboard.totalPoints + " คะแนน";
-
-}
-async function loadUserScore(){
-
-  const response = await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "getUserScore",
-      userId: currentUserId
-    })
-  });
-
-  const data = await response.json();
-
-  document.getElementById("myPoints").innerText =
-    data.score.points;
-
-  document.getElementById("myStreak").innerText =
-    "🔥 " + data.score.streak + " Day Streak";
-document.getElementById("myFreeze").innerText =
-  "🧊 Streak Freeze: " + data.score.freeze;
-updateLevel(Number(data.score.points));
-updateBadges(Number(data.score.points), Number(data.score.streak));
-
-}
 function updateLevel(points){
 
   let level = "Beginner";
@@ -423,6 +397,7 @@ function updateLevel(points){
     points + " / " + nextGoal + " คะแนน";
 
 }
+
 function updateBadges(points, streak){
 
   let badges = [];
@@ -455,7 +430,9 @@ function updateBadges(points, streak){
     badges.join("<br>");
 
 }
-  </script>
+
+main();
+</script>
 </div>
 </body>
 </html>
