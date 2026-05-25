@@ -177,7 +177,7 @@ button{
   <option>มากกว่า 8 ชม.</option>
 </select>
 
-<button>
+<button onclick="submitRegister()">
 ลงทะเบียน
 </button>
 
@@ -211,6 +211,72 @@ function nextStep(step){
 
 }
 
+const LIFF_ID = "2010154691-Lfwg705W";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
+
+let lineProfile = null;
+
+async function initRegister(){
+
+  await liff.init({ liffId: LIFF_ID });
+
+  if(!liff.isLoggedIn()){
+    liff.login();
+    return;
+  }
+
+  lineProfile = await liff.getProfile();
+
+}
+
+async function submitRegister(){
+
+  if(!lineProfile){
+    alert("ยังเชื่อมต่อ LINE ไม่สำเร็จ");
+    return;
+  }
+
+  const weight = Number(document.getElementById("weight").value);
+  const height = Number(document.getElementById("height").value);
+  const bmi = weight / Math.pow(height / 100, 2);
+
+  await fetch(GAS_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type":"text/plain"},
+    body: JSON.stringify({
+      action: "registerFullProfile",
+      userId: lineProfile.userId,
+      displayName: lineProfile.displayName,
+      pictureUrl: lineProfile.pictureUrl,
+      companyCode: "ABC",
+      companyName: "บริษัท ABC",
+      fullName: document.getElementById("fullName").value,
+      nickName: document.getElementById("nickName").value,
+      age: document.getElementById("age").value,
+      gender: document.getElementById("gender").value,
+      phone: document.getElementById("phone").value,
+      department: "",
+      weight: weight,
+      height: height,
+      bmi: bmi.toFixed(2),
+      waist: document.getElementById("waist").value,
+      systolic: document.getElementById("systolic").value,
+      diastolic: document.getElementById("diastolic").value,
+      exerciseHabit: document.getElementById("exerciseHabit").value,
+      foodHabit: document.getElementById("foodHabit").value,
+      sweetDrinkHabit: "",
+      sleepHabit: document.getElementById("sleepHabit").value
+    })
+  });
+
+  alert("ลงทะเบียนสำเร็จ");
+
+  window.location.href = "index.html";
+}
+
+initRegister();
+  
 </script>
 
 </body>
