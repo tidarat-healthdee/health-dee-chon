@@ -154,6 +154,15 @@ async function main(){
 
     currentUserId = profile.userId;
     currentDisplayName = profile.displayName;
+    const reg = await jsonp("isRegistered", {
+  userId: currentUserId
+});
+
+if(!reg.registered){
+  alert("กรุณาลงทะเบียนก่อนเข้าร่วมกิจกรรม");
+  window.location.href = "register.html";
+  return;
+}
 
     status.innerHTML =
       "สวัสดีคุณ " + profile.displayName + "<br><br>" +
