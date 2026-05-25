@@ -255,21 +255,31 @@ async function loadMission(){
 
 async function loadUserScore(){
 
-  const data = await jsonp("getUserScore", {
-    userId: currentUserId
-  });
+  try{
 
-  document.getElementById("myPoints").innerText =
-    data.score.points;
+    const data = await jsonp("getUserScore", {
+      userId: currentUserId
+    });
 
-  document.getElementById("myStreak").innerText =
-    "🔥 " + data.score.streak + " Day Streak";
+    alert("USER SCORE: " + JSON.stringify(data));
 
-  document.getElementById("myFreeze").innerText =
-    "🧊 Streak Freeze: " + data.score.freeze;
+    document.getElementById("myPoints").innerText =
+      data.score.points;
 
-  updateLevel(Number(data.score.points));
-  updateBadges(Number(data.score.points), Number(data.score.streak));
+    document.getElementById("myStreak").innerText =
+      "🔥 " + data.score.streak + " Day Streak";
+
+    document.getElementById("myFreeze").innerText =
+      "🧊 Streak Freeze: " + data.score.freeze;
+
+    updateLevel(Number(data.score.points));
+    updateBadges(Number(data.score.points), Number(data.score.streak));
+
+  }catch(error){
+
+    alert("loadUserScore ERROR: " + error.message);
+
+  }
 
 }
 
