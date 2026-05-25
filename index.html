@@ -266,8 +266,6 @@ async function loadUserScore(){
       userId: currentUserId
     });
 
-    alert("USER SCORE: " + JSON.stringify(data));
-
     document.getElementById("myPoints").innerText =
       data.score.points;
 
