@@ -244,7 +244,7 @@ async function submitMission(){
         try {
 
           await fetch(GAS_URL, {
-           method: "POST",
+                     method: "POST",
            mode: "no-cors",
             headers: {
               "Content-Type": "text/plain"
@@ -261,6 +261,7 @@ async function submitMission(){
 
 
           alert("🎉 ส่งภารกิจแล้ว");
+document.getElementById("imageUpload").value = "";
 
 loadLeaderboard();
 loadUserScore();
