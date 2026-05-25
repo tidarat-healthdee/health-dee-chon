@@ -1,163 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
 <style>
-  body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#fff8f0;
-    color:#333;
-  }
-
-  .app{
-    max-width:480px;
-    margin:0 auto;
-    padding:20px;
-    padding-bottom:40px;
-  }
-
-  .hero{
-    background:linear-gradient(135deg,#fff,#ffe0b2);
-    border-radius:28px;
-    padding:24px;
-    box-shadow:0 8px 24px rgba(255,152,0,0.18);
-    margin-bottom:20px;
-  }
-
-  .title{
-    font-size:28px;
-    font-weight:bold;
-    color:#e67e00;
-  }
-
-  .card{
-    background:white;
-    border-radius:24px;
-    padding:20px;
-    margin-top:16px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.08);
-  }
-
-  button{
-    width:100%;
-    border:none;
-    border-radius:18px;
-    padding:16px;
-    background:#ff9800;
-    color:white;
-    font-size:18px;
-    font-weight:bold;
-  }
-
-  input{
-    width:100%;
-    margin-top:12px;
-  }
-
-  hr{
-    border:none;
-    height:1px;
-    background:#f3d7b6;
-    margin:24px 0;
-  }
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#fff8f0;
+  color:#333;
+}
+.app{
+  max-width:480px;
+  margin:auto;
+  padding:20px;
+}
+.hero{
+  background:linear-gradient(135deg,#fff,#ffe0b2);
+  border-radius:28px;
+  padding:24px;
+  box-shadow:0 8px 24px rgba(255,152,0,0.18);
+}
+.title{
+  font-size:28px;
+  font-weight:bold;
+  color:#e67e00;
+}
+.card{
+  background:white;
+  border-radius:24px;
+  padding:20px;
+  margin-top:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+button{
+  width:100%;
+  border:none;
+  border-radius:18px;
+  padding:16px;
+  background:#ff9800;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+}
+hr{
+  border:none;
+  height:1px;
+  background:#f3d7b6;
+  margin:28px 0;
+}
 </style>
 </head>
 
 <body>
 <div class="app">
 
-  <div class="hero">
+<div class="hero">
+  <div class="title">Health Dee CHON</div>
+  <div style="margin-top:8px;">Wellness Challenge Platform</div>
+  <div id="status" style="margin-top:16px;">กำลังเชื่อมต่อ LINE...</div>
 
-  <div class="title">
-    Health Dee CHON
+  <div class="card">
+    <div>คะแนนของคุณ</div>
+    <div id="myPoints" style="font-size:36px;font-weight:bold;color:#ff9800;">0</div>
+    <div id="myStreak">🔥 0 Day Streak</div>
+    <div id="myFreeze" style="margin-top:6px;">🧊 Streak Freeze: 0</div>
+    <div id="myLevel" style="margin-top:10px;font-weight:bold;">Level: Beginner</div>
+
+    <div style="background:#ffe0b2;border-radius:20px;margin-top:8px;height:14px;">
+      <div id="progressBar" style="background:#ff9800;width:0%;height:14px;border-radius:20px;"></div>
+    </div>
+
+    <div id="progressText" style="font-size:13px;margin-top:6px;color:#777;">
+      0 / 100 คะแนน
+    </div>
+
+    <div id="badgeBox" style="margin-top:12px;font-size:15px;">
+      กำลังโหลด Badge...
+    </div>
   </div>
-
-  <div style="margin-top:8px;font-size:16px;">
-    Wellness Challenge Platform
-  </div>
-
-  <div id="status" style="margin-top:18px;"></div>
-<div class="card" style="margin-top:16px;">
-
-  <div style="font-size:18px;">คะแนนของคุณ</div>
-
-  <div id="myPoints" style="font-size:36px;font-weight:bold;color:#ff9800;">
-    0
-  </div>
-
-  <div id="myStreak" style="font-size:18px;">
-    🔥 0 Day Streak
-  </div>
-
-<div id="myFreeze" style="font-size:18px;margin-top:6px;">
-  🧊 Streak Freeze: 0
-</div>
-
-<div id="myBadge" style="font-size:16px;margin-top:8px;">
-  🏅 Badge: -
-</div>
-
-<div id="myLevel" style="margin-top:12px;font-weight:bold;">
-  Level: Beginner
-</div>
-
-<div style="background:#ffe0b2;border-radius:20px;margin-top:8px;height:14px;">
-  <div id="progressBar" style="
-    background:#ff9800;
-    width:0%;
-    height:14px;
-    border-radius:20px;
-  "></div>
-</div>
-
-<div id="progressText" style="font-size:13px;margin-top:6px;color:#777;">
-  0 / 100 คะแนน
-</div>
-<div id="badgeBox" style="margin-top:14px;font-size:15px;">
-  กำลังโหลด Badge...
-</div>
-
-</div>
-
 </div>
 
 <hr>
 
 <div class="card">
-
-<h3>ภารกิจวันนี้</h3>
-
-<div id="missionBox">กำลังโหลดภารกิจ...</div>
-
-<br>
-
-<input type="file" id="imageUpload" accept="image/*">
-
-<br><br>
-
-<button onclick="submitMission();">
-  ส่งภารกิจ
-</button>
+  <h3>ภารกิจวันนี้</h3>
+  <div id="missionBox">กำลังโหลดภารกิจ...</div>
+  <br>
+  <input type="file" id="imageUpload" accept="image/*">
+  <br><br>
+  <button onclick="submitMission()">ส่งภารกิจ</button>
 </div>
+
 <hr>
 
 <h3>อันดับในบริษัท</h3>
+<div id="leaderboardBox">กำลังโหลดอันดับ...</div>
 
-<div id="leaderboardBox">
-  กำลังโหลดอันดับ...
-</div>
 <hr>
 
 <h3>Admin Dashboard</h3>
+<div id="adminDashboard">กำลังโหลดข้อมูล...</div>
 
-<div id="adminDashboard">
-  กำลังโหลดข้อมูล...
-</div>
 </div>
 
-  <script>
+<script>
 const LIFF_ID = "2010154691-Lfwg705W";
 const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
 
@@ -187,7 +135,6 @@ function jsonp(action, params = {}){
     document.body.appendChild(script);
 
   });
-
 }
 
 async function main(){
@@ -195,8 +142,6 @@ async function main(){
   const status = document.getElementById("status");
 
   try{
-
-    status.innerText = "กำลังเชื่อมต่อ LINE...";
 
     await liff.init({ liffId: LIFF_ID });
 
@@ -215,104 +160,66 @@ async function main(){
       "LINE User ID:<br>" + profile.userId;
 
     fetch(GAS_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "text/plain"
-      },
-      body: JSON.stringify({
-        action: "registerUser",
-        userId: profile.userId,
-        displayName: profile.displayName,
-        pictureUrl: profile.pictureUrl,
-        companyCode: "ABC"
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain"},
+      body:JSON.stringify({
+        action:"registerUser",
+        userId:profile.userId,
+        displayName:profile.displayName,
+        pictureUrl:profile.pictureUrl,
+        companyCode:"ABC"
       })
     });
 
-    setTimeout(async function(){
-
-  await loadMission();
-
-  await loadUserScore();
-
-  await loadLeaderboard();
-
-  await loadAdminDashboard();
-
-}, 1000);
+    setTimeout(loadHomeData, 1200);
 
   }catch(error){
     status.innerText = "ERROR: " + error.message;
   }
-
 }
 
-async function loadMission(){
+async function loadHomeData(){
 
-  const data = await jsonp("getMission", {
+  const data = await jsonp("getHomeData", {
     userId: currentUserId
   });
 
   document.getElementById("missionBox").innerText =
-    "สัปดาห์ที่ " + data.week + " : " + data.mission;
+    "สัปดาห์ที่ " + data.mission.week + " : " + data.mission.mission;
 
+  updateScoreDisplay(data.score);
+  updateLeaderboard(data.leaderboard);
+  updateDashboard(data.dashboard);
 }
 
-async function loadUserScore(){
+function updateScoreDisplay(score){
 
-  try{
+  document.getElementById("myPoints").innerText = score.points;
+  document.getElementById("myStreak").innerText = "🔥 " + score.streak + " Day Streak";
+  document.getElementById("myFreeze").innerText = "🧊 Streak Freeze: " + score.freeze;
 
-    const data = await jsonp("getUserScore", {
-      userId: currentUserId
-    });
-
-    document.getElementById("myPoints").innerText =
-      data.score.points;
-
-    document.getElementById("myStreak").innerText =
-      "🔥 " + data.score.streak + " Day Streak";
-
-    document.getElementById("myFreeze").innerText =
-      "🧊 Streak Freeze: " + data.score.freeze;
-
-    updateLevel(Number(data.score.points));
-    updateBadges(Number(data.score.points), Number(data.score.streak));
-
-  }catch(error){
-
-    alert("loadUserScore ERROR: " + error.message);
-
-  }
-
+  updateLevel(Number(score.points));
+  updateBadges(Number(score.points), Number(score.streak));
 }
 
-async function loadLeaderboard(){
-
-  const data = await jsonp("getCompanyLeaderboard", {
-    userId: currentUserId
-  });
+function updateLeaderboard(list){
 
   let html = "";
 
-  for(let i = 0; i < data.leaderboard.length; i++){
-    html += "#" + (i + 1) + " " +
-      data.leaderboard[i].name + " - " +
-      data.leaderboard[i].points + " คะแนน<br>";
+  for(let i=0; i<list.length; i++){
+    html += "#" + (i+1) + " " + list[i].name + " - " + list[i].points + " คะแนน<br>";
   }
 
   document.getElementById("leaderboardBox").innerHTML = html;
-
 }
 
-async function loadAdminDashboard(){
-
-  const data = await jsonp("getAdminDashboard");
+function updateDashboard(data){
 
   document.getElementById("adminDashboard").innerHTML =
-    "จำนวนผู้เข้าร่วม: " + data.dashboard.totalUsers + " คน<br>" +
-    "จำนวนการส่งภารกิจ: " + data.dashboard.totalSubmissions + " ครั้ง<br>" +
-    "คะแนนรวมทั้งหมด: " + data.dashboard.totalPoints + " คะแนน";
-
+    "จำนวนผู้เข้าร่วม: " + data.totalUsers + " คน<br>" +
+    "จำนวนการส่งภารกิจ: " + data.totalSubmissions + " ครั้ง<br>" +
+    "คะแนนรวมทั้งหมด: " + data.totalPoints + " คะแนน";
 }
 
 async function submitMission(){
@@ -321,6 +228,15 @@ async function submitMission(){
 
   if(!file){
     alert("กรุณาเลือกรูป");
+    return;
+  }
+
+  const already = await jsonp("checkTodaySubmission", {
+    userId: currentUserId
+  });
+
+  if(already.submitted){
+    alert("วันนี้คุณส่งภารกิจแล้ว");
     return;
   }
 
@@ -342,51 +258,46 @@ async function submitMission(){
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      const resizedBase64 = canvas
-        .toDataURL("image/jpeg", 0.7)
-        .split(",")[1];
+      const resizedBase64 = canvas.toDataURL("image/jpeg", 0.7).split(",")[1];
 
       await fetch(GAS_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain"
-        },
-        body: JSON.stringify({
-          action: "submitMission",
-          userId: currentUserId,
-          displayName: currentDisplayName,
-          mission: document.getElementById("missionBox").innerText,
-          fileName: "mission.jpg",
-          base64Data: resizedBase64
+        method:"POST",
+        mode:"no-cors",
+        headers:{"Content-Type":"text/plain"},
+        body:JSON.stringify({
+          action:"submitMission",
+          userId:currentUserId,
+          displayName:currentDisplayName,
+          mission:document.getElementById("missionBox").innerText,
+          fileName:"mission.jpg",
+          base64Data:resizedBase64
         })
       });
 
       alert("กำลังตรวจสอบผลการส่ง...");
 
-setTimeout(async function(){
+      setTimeout(async function(){
 
-  const check = await jsonp("checkTodaySubmission", {
-    userId: currentUserId
-  });
+        const check = await jsonp("checkTodaySubmission", {
+          userId: currentUserId
+        });
 
-  if(check.submitted){
+        if(check.submitted){
+          alert("🎉 ส่งภารกิจสำเร็จแล้ว");
+          document.getElementById("imageUpload").value = "";
+          loadHomeData();
+        }else{
+          alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่");
+        }
 
-    alert("🎉 ส่งภารกิจสำเร็จแล้ว");
+      }, 2500);
+    };
 
-    document.getElementById("imageUpload").value = "";
+    img.src = event.target.result;
+  };
 
-    await loadUserScore();
-    await loadLeaderboard();
-    await loadAdminDashboard();
-
-  }else{
-
-    alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่อีกครั้ง");
-
-  }
-
-}, 2500);
+  reader.readAsDataURL(file);
+}
 
 function updateLevel(points){
 
@@ -404,54 +315,33 @@ function updateLevel(points){
     nextGoal = 300;
   }
 
-  let percent = Math.min((points / nextGoal) * 100, 100);
+  const percent = Math.min((points / nextGoal) * 100, 100);
 
-  document.getElementById("myLevel").innerText =
-    "Level: " + level;
-
-  document.getElementById("progressBar").style.width =
-    percent + "%";
-
+  document.getElementById("myLevel").innerText = "Level: " + level;
+  document.getElementById("progressBar").style.width = percent + "%";
   document.getElementById("progressText").innerText =
     points + " / " + nextGoal + " คะแนน";
-
 }
 
 function updateBadges(points, streak){
 
   let badges = [];
 
-  if(points >= 100){
-    badges.push("🌱 Healthy Starter");
-  }
-
-  if(points >= 300){
-    badges.push("🥗 Wellness Hero");
-  }
-
-  if(points >= 600){
-    badges.push("🏆 Health Champion");
-  }
-
-  if(streak >= 3){
-    badges.push("🔥 ไฟลุก 3 วัน");
-  }
-
-  if(streak >= 7){
-    badges.push("🔥🔥 ไฟลุก 7 วัน");
-  }
+  if(points >= 100) badges.push("🌱 Healthy Starter");
+  if(points >= 300) badges.push("🥗 Wellness Hero");
+  if(points >= 600) badges.push("🏆 Health Champion");
+  if(streak >= 3) badges.push("🔥 ไฟลุก 3 วัน");
+  if(streak >= 7) badges.push("🔥🔥 ไฟลุก 7 วัน");
 
   if(badges.length == 0){
     badges.push("เริ่มสะสม Badge แรกกันเลย!");
   }
 
-  document.getElementById("badgeBox").innerHTML =
-    badges.join("<br>");
-
+  document.getElementById("badgeBox").innerHTML = badges.join("<br>");
 }
 
 main();
 </script>
-</div>
+
 </body>
 </html>
