@@ -138,7 +138,7 @@ button{
 
 <input type="number" id="height" placeholder="ส่วนสูง (cm)">
 
-<input type="number" id="waist" placeholder="รอบเอว">
+<input type="number" id="waist" placeholder="รอบเอว (เซนติเมตร)">
 
 <input type="number" id="systolic" placeholder="ความดันตัวบน">
 
@@ -157,21 +157,29 @@ button{
 <h3>พฤติกรรมสุขภาพ</h3>
 
 <select id="exerciseHabit">
-  <option value="">ออกกำลังกาย</option>
+  <option value="">ปกติออกกำลังกายบ่อยแค่ไหน?</option>
   <option>ไม่ค่อยออก</option>
   <option>1-2 วัน/สัปดาห์</option>
   <option>3 วันขึ้นไป/สัปดาห์</option>
 </select>
 
 <select id="foodHabit">
-  <option value="">พฤติกรรมการกิน</option>
-  <option>ชอบหวาน</option>
-  <option>ชอบมัน</option>
-  <option>กินผักผลไม้สม่ำเสมอ</option>
+  <option value="">ทานผักผลไม้รวมแล้วได้ครึ่งจานบ่อยแค่ไหน?</option>
+  <option>แทบไม่เคย</option>
+  <option>บางมื้อ</option>
+  <option>ทุกมื้อ</option>
+</select>
+
+<select id="sweetDrinkHabit">
+  <option value="">ดื่มเครื่องดื่มหวานบ่อยแค่ไหน?</option>
+  <option>แทบไม่ดื่ม</option>
+  <option>1-2 วัน/สัปดาห์</option>
+  <option>3-5 วัน/สัปดาห์</option>
+  <option>ทุกวัน</option>
 </select>
 
 <select id="sleepHabit">
-  <option value="">การนอน</option>
+  <option value="">ปกตินอนเฉลี่ยวันละกี่ชั่วโมง?</option>
   <option>นอนน้อยกว่า 6 ชม.</option>
   <option>6-8 ชม.</option>
   <option>มากกว่า 8 ชม.</option>
@@ -265,7 +273,7 @@ async function submitRegister(){
       diastolic: document.getElementById("diastolic").value,
       exerciseHabit: document.getElementById("exerciseHabit").value,
       foodHabit: document.getElementById("foodHabit").value,
-      sweetDrinkHabit: "",
+      sweetDrinkHabit: document.getElementById("sweetDrinkHabit").value,
       sleepHabit: document.getElementById("sleepHabit").value
     })
   });
