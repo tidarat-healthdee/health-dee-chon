@@ -293,33 +293,40 @@ async function submitMission(){
   reader.readAsDataURL(file);
 
 }
+function jsonp(action, params = {}){
+
+  return new Promise(function(resolve){
+
+    const callbackName = "callback_" + Date.now();
+
+    window[callbackName] = function(data){
+      resolve(data);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    let url = GAS_URL + "?action=" + action + "&callback=" + callbackName;
+
+    for(const key in params){
+      url += "&" + key + "=" + encodeURIComponent(params[key]);
+    }
+
+    const script = document.createElement("script");
+    script.src = url;
+    document.body.appendChild(script);
+
+  });
+
+}
 
 async function loadMission(){
 
-  try{
+  const data = await jsonp("getMission", {
+    userId: currentUserId
+  });
 
-    const response = await fetch(GAS_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain"
-      },
-      body: JSON.stringify({
-        action: "getMission",
-        userId: currentUserId
-      })
-    });
-
-    const data = await response.json();
-
-    document.getElementById("missionBox").innerText =
-      "สัปดาห์ที่ " + data.week + " : " + data.mission;
-
-  }catch(error){
-
-    document.getElementById("missionBox").innerText =
-      "โหลดภารกิจไม่ได้: " + error.message;
-
-  }
+  document.getElementById("missionBox").innerText =
+    "สัปดาห์ที่ " + data.week + " : " + data.mission;
 
 }
 
