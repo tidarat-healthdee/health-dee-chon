@@ -95,6 +95,10 @@
   🧊 Streak Freeze: 0
 </div>
 
+<div id="myBadge" style="font-size:16px;margin-top:8px;">
+  🏅 Badge: -
+</div>
+
 <div id="myLevel" style="margin-top:12px;font-weight:bold;">
   Level: Beginner
 </div>
@@ -260,7 +264,13 @@ async function submitMission(){
           });
 
 
-          alert("🎉 ส่งภารกิจแล้ว");
+          alert("🎉 ส่งภารกิจสำเร็จ! คะแนน: " + result.score);
+
+     if(result.badge){
+  document.getElementById("myBadge").innerText =
+    "🏅 Badge: " + result.badge;
+}
+
 document.getElementById("imageUpload").value = "";
 
 loadLeaderboard();
