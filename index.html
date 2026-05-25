@@ -362,25 +362,31 @@ async function submitMission(){
         })
       });
 
-      alert("🎉 ส่งภารกิจแล้ว");
+      alert("กำลังตรวจสอบผลการส่ง...");
 
-      document.getElementById("imageUpload").value = "";
+setTimeout(async function(){
 
-      setTimeout(function(){
-        loadLeaderboard();
-        loadUserScore();
-        loadAdminDashboard();
-      }, 1500);
+  const check = await jsonp("checkTodaySubmission", {
+    userId: currentUserId
+  });
 
-    };
+  if(check.submitted){
 
-    img.src = event.target.result;
+    alert("🎉 ส่งภารกิจสำเร็จแล้ว");
 
-  };
+    document.getElementById("imageUpload").value = "";
 
-  reader.readAsDataURL(file);
+    await loadUserScore();
+    await loadLeaderboard();
+    await loadAdminDashboard();
 
-}
+  }else{
+
+    alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่อีกครั้ง");
+
+  }
+
+}, 2500);
 
 function updateLevel(points){
 
