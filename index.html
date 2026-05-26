@@ -499,7 +499,15 @@ async function loadMissions(){
 }
 
 async function submitMissionByType(missionType, week, missionTitle, points, diamonds){
+const already = await jsonp("checkTodaySubmission", {
+  userId: currentUserId,
+  missionType: missionType
+});
 
+if(already.submitted){
+  alert("วันนี้คุณส่งภารกิจประเภทนี้แล้ว");
+  return;
+}
   const fileInputId = "image_" + missionType + "_" + week;
   const file = document.getElementById(fileInputId).files[0];
 
