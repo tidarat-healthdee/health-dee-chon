@@ -368,8 +368,9 @@ async function submitMission(){
       setTimeout(async function(){
 
         const check = await jsonp("checkTodaySubmission", {
-          userId: currentUserId
-        });
+  userId: currentUserId,
+  missionType: missionType
+});
 
         if(check.submitted){
           alert("🎉 ส่งภารกิจสำเร็จแล้ว");
