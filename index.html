@@ -120,7 +120,9 @@ hr{
 
 <div class="card">
   <h3>ภารกิจวันนี้</h3>
-  <div id="missionBox">กำลังโหลดภารกิจ...</div>
+  <div id="missionList">
+  กำลังโหลดภารกิจ...
+</div>
   <br>
   <input type="file" id="imageUpload" accept="image/*">
   <br><br>
@@ -228,7 +230,7 @@ async function loadHomeData(){
     userId: currentUserId
   });
 
-  document.getElementById("missionBox").innerText =
+  loadMissions();
     "สัปดาห์ที่ " + data.mission.week + " : " + data.mission.mission;
 
   updateScoreDisplay(data.score);
@@ -394,6 +396,28 @@ async function buyFreeze(){
   alert(result.message);
 
   await loadHomeData();
+
+}
+
+async function loadMissions(){
+
+  const data = await jsonp("getMissions");
+
+  let html = "";
+
+  data.missions.forEach(function(mission){
+
+    html += `
+      <div class="card">
+        <b>${mission.title}</b><br>
+        ประเภท: ${mission.type}<br>
+        ⭐ ${mission.points} คะแนน | 💎 ${mission.diamonds} เพชร
+      </div>
+    `;
+
+  });
+
+  document.getElementById("missionList").innerHTML = html;
 
 }
   
