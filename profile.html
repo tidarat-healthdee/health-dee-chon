@@ -169,8 +169,6 @@ try{
   return;
 }
 
-alert(JSON.stringify(data));
-
   document.getElementById("myPoints").innerText =
     data.score.points;
 
@@ -179,6 +177,9 @@ alert(JSON.stringify(data));
 
   document.getElementById("myFreeze").innerText =
     "🧊 " + data.score.freeze + " Freeze";
+
+  document.getElementById("myDiamonds").innerText =
+  "💎 " + (data.score.diamonds || 0) + " Diamonds";
 
   document.getElementById("badgeBox").innerHTML =
     "🌱 Healthy Starter";
