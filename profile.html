@@ -158,9 +158,18 @@ async function main(){
   document.getElementById("displayName").innerText =
     profile.displayName;
 
-  const data = await jsonp("getHomeData", {
+  let data;
+
+try{
+  data = await jsonp("getHomeData", {
     userId: profile.userId
   });
+}catch(error){
+  alert("โหลดโปรไฟล์ไม่ได้: " + error.message);
+  return;
+}
+
+alert(JSON.stringify(data));
 
   document.getElementById("myPoints").innerText =
     data.score.points;
