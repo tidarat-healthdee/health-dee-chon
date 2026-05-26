@@ -69,6 +69,9 @@ hr{
     <div id="myDiamonds" style="margin-top:6px;">
   💎 0 Diamonds
 </div>
+    <button onclick="buyFreeze()" style="margin-top:12px;">
+  ซื้อ 🧊 Streak Freeze (30 💎)
+</button>
     <div id="myLevel" style="margin-top:10px;font-weight:bold;">Level: Beginner</div>
 
     <div style="background:#ffe0b2;border-radius:20px;margin-top:8px;height:14px;">
@@ -353,7 +356,19 @@ function updateBadges(points, streak){
 
   document.getElementById("badgeBox").innerHTML = badges.join("<br>");
 }
+  
+async function buyFreeze(){
 
+  const result = await jsonp("buyFreeze", {
+    userId: currentUserId
+  });
+
+  alert(result.message);
+
+  await loadHomeData();
+
+}
+  
 main();
 </script>
 
