@@ -119,6 +119,44 @@ hr{
   font-size:16px;
   font-weight:bold;
 }
+
+#loadingModal{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,0.45);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.modal-box{
+  background:white;
+  width:80%;
+  max-width:320px;
+  border-radius:24px;
+  padding:28px 20px;
+  text-align:center;
+  box-shadow:0 12px 30px rgba(0,0,0,0.18);
+}
+
+.spinner{
+  width:48px;
+  height:48px;
+  border:5px solid #ffe0b2;
+  border-top:5px solid #ff9800;
+  border-radius:50%;
+  margin:0 auto 16px;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  from{ transform:rotate(0deg); }
+  to{ transform:rotate(360deg); }
+}
   
 </style>
 </head>
@@ -349,6 +387,11 @@ async function submitMission(){
 
       const resizedBase64 = canvas.toDataURL("image/jpeg", 0.7).split(",")[1];
 
+      showLoading(
+  "กำลังส่งข้อมูล...",
+  "ระบบกำลังบันทึกภารกิจของคุณ"
+);
+      
       await fetch(GAS_URL, {
         method:"POST",
         mode:"no-cors",
@@ -362,8 +405,6 @@ async function submitMission(){
           base64Data:resizedBase64
         })
       });
-
-      alert("กำลังตรวจสอบผลการส่ง...");
 
       setTimeout(async function(){
 
@@ -558,8 +599,6 @@ if(already.submitted){
         })
       });
 
-      alert("กำลังตรวจสอบผลการส่ง...");
-
       setTimeout(async function(){
 
         const check = await jsonp("checkTodaySubmission", {
@@ -568,12 +607,13 @@ if(already.submitted){
 });
 
         if(check.submitted){
-          alert("🎉 ส่งภารกิจสำเร็จแล้ว");
+          showSuccess(points, diamonds);
           document.getElementById(fileInputId).value = "";
           loadHomeData();
           loadMissions();
         }else{
-          alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่");
+          hideLoading();
+alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่");
         }
 
       }, 2500);
@@ -587,6 +627,27 @@ if(already.submitted){
   reader.readAsDataURL(file);
 
 }
+function showLoading(title, text){
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalText").innerText = text;
+  document.getElementById("loadingModal").style.display = "flex";
+}
+
+function hideLoading(){
+  document.getElementById("loadingModal").style.display = "none";
+}
+
+function showSuccess(points, diamonds){
+  document.querySelector(".spinner").style.display = "none";
+  document.getElementById("modalTitle").innerText = "🎉 ส่งภารกิจสำเร็จ";
+  document.getElementById("modalText").innerText =
+    "ได้รับ ⭐ " + points + " คะแนน และ 💎 " + diamonds + " เพชร";
+
+  setTimeout(function(){
+    document.querySelector(".spinner").style.display = "block";
+    hideLoading();
+  }, 2200);
+}
   
 main();
 </script>
@@ -596,6 +657,14 @@ main();
   <a href="leaderboard.html">🏆<br>อันดับ</a>
   <a href="shop.html">🛒<br>ร้านค้า</a>
   <a href="profile.html">👤<br>โปรไฟล์</a>
+</div>
+
+  <div id="loadingModal" style="display:none;">
+  <div class="modal-box">
+    <div class="spinner"></div>
+    <h3 id="modalTitle">กำลังส่งข้อมูล...</h3>
+    <p id="modalText">กรุณารอสักครู่</p>
+  </div>
 </div>
   
 </body>
