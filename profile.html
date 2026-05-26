@@ -1,9 +1,184 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<style>
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#fff8f0;
+  color:#333;
+}
+
+.container{
+  max-width:480px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:white;
+  border-radius:24px;
+  padding:24px;
+  margin-top:20px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+}
+
+.profile{
+  text-align:center;
+}
+
+.profile img{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.name{
+  font-size:24px;
+  font-weight:bold;
+  margin-top:12px;
+}
+
+.point{
+  font-size:40px;
+  font-weight:bold;
+  color:#ff9800;
+  margin-top:10px;
+}
+
+.info{
+  margin-top:10px;
+  font-size:18px;
+}
+
+.badge{
+  background:#fff3cd;
+  padding:10px;
+  border-radius:14px;
+  margin-top:12px;
+}
+
+</style>
 </head>
+
 <body>
-  <h1>โปรไฟล์ของฉัน</h1>
+
+<div class="container">
+
+<div class="card profile">
+
+<img id="profilePic">
+
+<div class="name" id="displayName">
+กำลังโหลด...
+</div>
+
+<div class="point" id="myPoints">
+0
+</div>
+
+<div>
+คะแนนสะสม
+</div>
+
+<div class="info" id="myStreak">
+🔥 0 Day Streak
+</div>
+
+<div class="info" id="myFreeze">
+🧊 0 Freeze
+</div>
+
+<div class="info" id="myDiamonds">
+💎 0 Diamonds
+</div>
+
+<div class="badge" id="badgeBox">
+กำลังโหลด Badge...
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const LIFF_ID = "2010154691-Lfwg705W";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
+
+async function jsonp(action, params = {}){
+
+  return new Promise(function(resolve){
+
+    const callbackName = "callback_" + Date.now();
+
+    window[callbackName] = function(data){
+      resolve(data);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    let url = GAS_URL + "?action=" + action + "&callback=" + callbackName;
+
+    for(const key in params){
+      url += "&" + key + "=" + encodeURIComponent(params[key]);
+    }
+
+    const script = document.createElement("script");
+    script.src = url;
+
+    document.body.appendChild(script);
+
+  });
+
+}
+
+async function main(){
+
+  await liff.init({
+    liffId: LIFF_ID
+  });
+
+  if(!liff.isLoggedIn()){
+    liff.login();
+    return;
+  }
+
+  const profile = await liff.getProfile();
+
+  document.getElementById("profilePic").src =
+    profile.pictureUrl;
+
+  document.getElementById("displayName").innerText =
+    profile.displayName;
+
+  const data = await jsonp("getHomeData", {
+    userId: profile.userId
+  });
+
+  document.getElementById("myPoints").innerText =
+    data.score.points;
+
+  document.getElementById("myStreak").innerText =
+    "🔥 " + data.score.streak + " Day Streak";
+
+  document.getElementById("myFreeze").innerText =
+    "🧊 " + data.score.freeze + " Freeze";
+
+  document.getElementById("badgeBox").innerHTML =
+    "🌱 Healthy Starter";
+
+}
+
+main();
+
+</script>
+
 </body>
 </html>
