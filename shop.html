@@ -104,7 +104,7 @@ body{
 ราคา: 30 💎
 </div>
 
-<button class="buy-btn">
+<button class="buy-btn" onclick="buyFreezeFromShop()">
 ซื้อเลย
 </button>
 
@@ -121,5 +121,67 @@ body{
   <a href="profile.html">👤<br>โปรไฟล์</a>
 </div>
 
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<script>
+const LIFF_ID = "2010154691-Lfwg705W";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
+
+let currentUserId = "";
+
+function jsonp(action, params = {}){
+
+  return new Promise(function(resolve){
+
+    const callbackName = "callback_" + Date.now();
+
+    window[callbackName] = function(data){
+      resolve(data);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    let url = GAS_URL + "?action=" + action + "&callback=" + callbackName;
+
+    for(const key in params){
+      url += "&" + key + "=" + encodeURIComponent(params[key]);
+    }
+
+    const script = document.createElement("script");
+    script.src = url;
+    document.body.appendChild(script);
+
+  });
+
+}
+
+async function initShop(){
+
+  await liff.init({ liffId: LIFF_ID });
+
+  if(!liff.isLoggedIn()){
+    liff.login();
+    return;
+  }
+
+  const profile = await liff.getProfile();
+
+  currentUserId = profile.userId;
+
+}
+
+async function buyFreezeFromShop(){
+
+  const result = await jsonp("buyFreeze", {
+    userId: currentUserId
+  });
+
+  alert(result.message);
+
+}
+
+initShop();
+</script>
+  
 </body>
 </html>
