@@ -66,6 +66,9 @@ hr{
     <div id="myPoints" style="font-size:36px;font-weight:bold;color:#ff9800;">0</div>
     <div id="myStreak">🔥 0 Day Streak</div>
     <div id="myFreeze" style="margin-top:6px;">🧊 Streak Freeze: 0</div>
+    <div id="myDiamonds" style="margin-top:6px;">
+  💎 0 Diamonds
+</div>
     <div id="myLevel" style="margin-top:10px;font-weight:bold;">Level: Beginner</div>
 
     <div style="background:#ffe0b2;border-radius:20px;margin-top:8px;height:14px;">
@@ -207,6 +210,8 @@ function updateScoreDisplay(score){
   document.getElementById("myPoints").innerText = score.points;
   document.getElementById("myStreak").innerText = "🔥 " + score.streak + " Day Streak";
   document.getElementById("myFreeze").innerText = "🧊 Streak Freeze: " + score.freeze;
+  document.getElementById("myDiamonds").innerText =
+  "💎 " + (score.diamonds || 0) + " Diamonds";
 
   updateLevel(Number(score.points));
   updateBadges(Number(score.points), Number(score.streak));
