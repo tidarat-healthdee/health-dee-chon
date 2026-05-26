@@ -77,6 +77,48 @@ hr{
   color:#ff9800;
   font-weight:bold;
 }
+
+.mission-section{
+  margin-top:20px;
+  padding:18px;
+  border-radius:24px;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.basic-section{
+  border-left:6px solid #4caf50;
+}
+
+.weekly-section{
+  border-left:6px solid #ff9800;
+}
+
+.mission-section p{
+  color:#666;
+  font-size:15px;
+  line-height:1.5;
+}
+
+.mission-card{
+  margin-top:16px;
+  padding:18px;
+  border-radius:20px;
+  background:#fffaf2;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+
+.mission-card button{
+  width:100%;
+  margin-top:14px;
+  padding:14px;
+  border:none;
+  border-radius:16px;
+  background:#ff9800;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+}
   
 </style>
 </head>
@@ -403,21 +445,55 @@ async function loadMissions(){
 
   const data = await jsonp("getMissions");
 
-  let html = "";
+  let basicHtml = "";
+  let weeklyHtml = "";
 
   data.missions.forEach(function(mission){
 
-    html += `
-      <div class="card">
+    const missionCard = `
+      <div class="mission-card">
         <b>${mission.title}</b><br>
-        ประเภท: ${mission.type}<br>
-        ⭐ ${mission.points} คะแนน | 💎 ${mission.diamonds} เพชร
+        <div style="margin-top:6px;">
+          ⭐ ${mission.points} คะแนน | 💎 ${mission.diamonds} เพชร
+        </div>
+
+        <input type="file" id="image_${mission.type}_${mission.week}" accept="image/*" style="margin-top:12px;">
+
+        <button onclick="submitMissionByType('${mission.type}', '${mission.week}', '${mission.title}', ${mission.points}, ${mission.diamonds})">
+          ส่งภารกิจนี้
+        </button>
       </div>
     `;
 
+    if(mission.type == "basic"){
+      basicHtml += missionCard;
+    }
+
+    if(mission.type == "weekly"){
+      weeklyHtml += missionCard;
+    }
+
   });
 
-  document.getElementById("missionList").innerHTML = html;
+  document.getElementById("missionList").innerHTML = `
+    <div class="mission-section basic-section">
+      <h3>🌱 ภารกิจพื้นฐาน</h3>
+      <p>
+        ภารกิจเสริมสำหรับสะสมคะแนนและเพชร สามารถทำได้เมื่อพร้อม
+        ไม่จำเป็นต้องทำทุกวัน
+      </p>
+      ${basicHtml || "ยังไม่มีภารกิจพื้นฐาน"}
+    </div>
+
+    <div class="mission-section weekly-section">
+      <h3>🔥 ภารกิจประจำสัปดาห์</h3>
+      <p>
+        ภารกิจหลักของสัปดาห์นี้ ควรทำทุกวันเพื่อสะสม Streak
+        และรักษาความต่อเนื่อง
+      </p>
+      ${weeklyHtml || "ยังไม่มีภารกิจประจำสัปดาห์"}
+    </div>
+  `;
 
 }
   
