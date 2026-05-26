@@ -157,6 +157,16 @@ hr{
   from{ transform:rotate(0deg); }
   to{ transform:rotate(360deg); }
 }
+
+.submitted-badge{
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
+  background:#e8f5e9;
+  color:#2e7d32;
+  text-align:center;
+  font-weight:bold;
+}
   
 </style>
 </head>
@@ -488,32 +498,50 @@ async function loadMissions(){
   let basicHtml = "";
   let weeklyHtml = "";
 
-  data.missions.forEach(function(mission){
+  for(const mission of data.missions){
 
-    const missionCard = `
-      <div class="mission-card">
-        <b>${mission.title}</b><br>
-        <div style="margin-top:6px;">
-          ⭐ ${mission.points} คะแนน | 💎 ${mission.diamonds} เพชร
-        </div>
+  const check = await jsonp("checkTodaySubmission", {
+    userId: currentUserId,
+    missionType: mission.type
+  });
 
-        <input type="file" id="image_${mission.type}_${mission.week}" accept="image/*" style="margin-top:12px;">
+  let actionHtml = "";
 
-        <button onclick="submitMissionByType('${mission.type}', '${mission.week}', '${mission.title}', ${mission.points}, ${mission.diamonds})">
-          ส่งภารกิจนี้
-        </button>
+  if(check.submitted){
+    actionHtml = `
+      <div class="submitted-badge">
+        ✅ ส่งแล้ววันนี้
       </div>
     `;
+  }else{
+    actionHtml = `
+      <input type="file" id="image_${mission.type}_${mission.week}" accept="image/*" style="margin-top:12px;">
 
-    if(mission.type == "basic"){
-      basicHtml += missionCard;
-    }
+      <button onclick="submitMissionByType('${mission.type}', '${mission.week}', '${mission.title}', Number('${mission.points}'), Number('${mission.diamonds}'))">
+        ส่งภารกิจนี้
+      </button>
+    `;
+  }
 
-    if(mission.type == "weekly"){
-      weeklyHtml += missionCard;
-    }
+  const missionCard = `
+    <div class="mission-card">
+      <b>${mission.title}</b><br>
+      <div style="margin-top:6px;">
+        ⭐ ${mission.points} คะแนน | 💎 ${mission.diamonds} เพชร
+      </div>
+      ${actionHtml}
+    </div>
+  `;
 
-  });
+  if(mission.type == "basic"){
+    basicHtml += missionCard;
+  }
+
+  if(mission.type == "weekly"){
+    weeklyHtml += missionCard;
+  }
+
+}
 
   document.getElementById("missionList").innerHTML = `
     <div class="mission-section basic-section">
