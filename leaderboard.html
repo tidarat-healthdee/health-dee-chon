@@ -73,7 +73,9 @@ body{
 🏆 ตารางคะแนน
 </div>
 
-<p>หน้าอันดับกำลังพัฒนา</p>
+<div id="leaderboardList">
+  กำลังโหลดอันดับ...
+</div>
 
 </div>
 
@@ -86,5 +88,72 @@ body{
   <a href="profile.html">👤<br>โปรไฟล์</a>
 </div>
 
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<script>
+const LIFF_ID = "2010154691-Lfwg705W";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
+
+function jsonp(action, params = {}){
+
+  return new Promise(function(resolve){
+
+    const callbackName = "callback_" + Date.now();
+
+    window[callbackName] = function(data){
+      resolve(data);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    let url = GAS_URL + "?action=" + action + "&callback=" + callbackName;
+
+    for(const key in params){
+      url += "&" + key + "=" + encodeURIComponent(params[key]);
+    }
+
+    const script = document.createElement("script");
+    script.src = url;
+    document.body.appendChild(script);
+
+  });
+
+}
+
+async function initLeaderboard(){
+
+  await liff.init({ liffId: LIFF_ID });
+
+  if(!liff.isLoggedIn()){
+    liff.login();
+    return;
+  }
+
+  const profile = await liff.getProfile();
+
+  const data = await jsonp("getHomeData", {
+    userId: profile.userId
+  });
+
+  let html = "";
+
+  for(let i = 0; i < data.leaderboard.length; i++){
+
+    html += `
+      <div class="card">
+        <b>#${i + 1} ${data.leaderboard[i].name}</b><br>
+        ${data.leaderboard[i].points} คะแนน
+      </div>
+    `;
+
+  }
+
+  document.getElementById("leaderboardList").innerHTML = html;
+
+}
+
+initLeaderboard();
+</script>
+  
 </body>
 </html>
