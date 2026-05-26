@@ -175,11 +175,16 @@ async function initLeaderboard(){
   for(let i = 0; i < data.leaderboard.length; i++){
 
     html += `
-      <div class="card">
-        <b>#${i + 1} ${data.leaderboard[i].name}</b><br>
-        ${data.leaderboard[i].points} คะแนน
-      </div>
-    `;
+  <div class="rank-card">
+    <div class="rank-left">
+      <div class="rank-no">#${i + 1}</div>
+      <div class="rank-name">${data.leaderboard[i].name}</div>
+    </div>
+    <div class="rank-point">
+      ${data.leaderboard[i].points} คะแนน
+    </div>
+  </div>
+`;
 
   }
 
