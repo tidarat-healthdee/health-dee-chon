@@ -171,6 +171,12 @@ async function initShop(){
   const profile = await liff.getProfile();
 
   currentUserId = profile.userId;
+  const data = await jsonp("getHomeData", {
+  userId: currentUserId
+});
+
+document.getElementById("diamondBalance").innerText =
+  "💎 เพชรของคุณ: " + (data.score.diamonds || 0);
 
 }
 
@@ -181,6 +187,8 @@ async function buyFreezeFromShop(){
   });
 
   alert(result.message);
+
+  initShop();
 
 }
 
