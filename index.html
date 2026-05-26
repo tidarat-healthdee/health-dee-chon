@@ -496,6 +496,87 @@ async function loadMissions(){
   `;
 
 }
+
+async function submitMissionByType(missionType, week, missionTitle, points, diamonds){
+
+  const fileInputId = "image_" + missionType + "_" + week;
+  const file = document.getElementById(fileInputId).files[0];
+
+  if(!file){
+    alert("กรุณาเลือกรูปก่อนส่งภารกิจ");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(event){
+
+    const img = new Image();
+
+    img.onload = async function(){
+
+      const canvas = document.createElement("canvas");
+      const maxWidth = 800;
+      const scale = maxWidth / img.width;
+
+      canvas.width = maxWidth;
+      canvas.height = img.height * scale;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      const resizedBase64 = canvas
+        .toDataURL("image/jpeg", 0.7)
+        .split(",")[1];
+
+      await fetch(GAS_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain"
+        },
+        body: JSON.stringify({
+          action: "submitMission",
+          userId: currentUserId,
+          displayName: currentDisplayName,
+          mission: missionTitle,
+          missionType: missionType,
+          week: week,
+          points: points,
+          diamonds: diamonds,
+          fileName: "mission.jpg",
+          base64Data: resizedBase64
+        })
+      });
+
+      alert("กำลังตรวจสอบผลการส่ง...");
+
+      setTimeout(async function(){
+
+        const check = await jsonp("checkTodaySubmission", {
+          userId: currentUserId
+        });
+
+        if(check.submitted){
+          alert("🎉 ส่งภารกิจสำเร็จแล้ว");
+          document.getElementById(fileInputId).value = "";
+          loadHomeData();
+          loadMissions();
+        }else{
+          alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่");
+        }
+
+      }, 2500);
+
+    };
+
+    img.src = event.target.result;
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
   
 main();
 </script>
