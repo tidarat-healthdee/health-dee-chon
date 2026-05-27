@@ -209,8 +209,17 @@ try{
   document.getElementById("myDiamonds").innerText =
   "💎 " + (data.score.diamonds || 0) + " Diamonds";
 
-  document.getElementById("badgeBox").innerHTML =
-    "🌱 Healthy Starter";
+  let badge = "🌱 Beginner";
+
+if(data.score.points >= 600){
+  badge = "👑 Health Champion";
+}else if(data.score.points >= 300){
+  badge = "💪 Wellness Hero";
+}else if(data.score.points >= 100){
+  badge = "🔥 Healthy Starter";
+}
+
+document.getElementById("badgeBox").innerHTML = badge;
 
 }
 
