@@ -144,10 +144,10 @@ async function loadDashboard(){
     data.dashboard.totalSubmissions || 0;
 
   document.getElementById("topStreak").innerText =
-    "🔥";
+  data.dashboard.topStreak || 0;
 
-  document.getElementById("freezeUsed").innerText =
-    "🧊";
+document.getElementById("freezeUsed").innerText =
+  data.dashboard.totalFreeze || 0;
 
 }
 
