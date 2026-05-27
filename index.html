@@ -171,50 +171,47 @@ hr{
 .app-header{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:14px;
 
-  background:
-    linear-gradient(rgba(255,255,255,0.08), rgba(255,255,255,0.08)),
-    url('header-bg.png');
+  background:linear-gradient(
+    135deg,
+    #e8f5e9,
+    #fff8e1,
+    #e3f2fd
+  );
 
-  background-size:cover;
-  background-position:center;
+  border-radius:24px;
 
-  border-radius:22px;
+  padding:16px;
 
-  padding:14px 16px;
   margin-bottom:18px;
 
-  min-height:120px;
-
   box-shadow:
-    0 10px 24px rgba(0,0,0,0.14),
-    0 4px 10px rgba(76,175,80,0.14);
+    0 14px 30px rgba(0,0,0,0.16),
+    0 0 18px rgba(76,175,80,0.18);
 
-  border:1px solid rgba(255,255,255,0.7);
+  backdrop-filter: blur(6px);
 
-  position:relative;
-  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.8);
 }
 
 .header-logo-img{
-  width:58px;
-  height:58px;
+  width:76px;
+  height:76px;
 
   border-radius:50%;
   object-fit:cover;
 
   background:white;
-  padding:4px;
+
+  padding:5px;
+
+  border:2px solid rgba(255,255,255,0.8);
 
   box-shadow:
-    0 6px 16px rgba(0,0,0,0.16),
-    0 0 12px rgba(255,255,255,0.45);
+    0 6px 18px rgba(0,0,0,0.14);
 
   flex-shrink:0;
-
-  position:relative;
-  z-index:2;
 }
 
 .header-content{
@@ -222,34 +219,45 @@ hr{
 }
 
 .header-title{
-  font-size:18px;
-  font-weight:800;
+  font-size:23px;
+  font-weight:bold;
+
   color:#1b5e20;
+
   line-height:1.1;
+
+  text-shadow:
+    0 2px 6px rgba(0,0,0,0.10);
 }
 
 .header-subtitle{
   display:inline-block;
 
-  font-size:11px;
+  font-size:13px;
 
   color:white;
 
-  background:linear-gradient(90deg,#1e88e5,#66bb6a);
+  background:linear-gradient(
+    90deg,
+    #1e88e5,
+    #66bb6a
+  );
 
-  padding:4px 9px;
+  padding:4px 10px;
 
   border-radius:999px;
 
-  margin-top:5px;
+  margin-top:6px;
 
   font-weight:bold;
 }
 
 .header-tagline{
-  font-size:11px;
-  color:#555;
-  margin-top:5px;
+  font-size:13px;
+
+  color:#666;
+
+  margin-top:7px;
 }
   
 </style>
