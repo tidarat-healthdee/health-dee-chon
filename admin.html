@@ -93,7 +93,7 @@ body{
     </div>
 
     <div class="card">
-      <div class="card-title">Freeze ถูกใช้</div>
+      <div class="card-title">Active Users วันนี้</div>
       <div class="card-value" id="freezeUsed">-</div>
     </div>
 
@@ -147,7 +147,7 @@ async function loadDashboard(){
   data.dashboard.topStreak || 0;
 
 document.getElementById("freezeUsed").innerText =
-  data.dashboard.totalFreeze || 0;
+  data.dashboard.totalUsers || 0;
 
 }
 
