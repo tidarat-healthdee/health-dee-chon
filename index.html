@@ -764,7 +764,7 @@ if(already.submitted){
 });
 
         if(check.submitted){
-          showSuccess(points, diamonds);
+          showSuccess(points, diamonds, missionType);
           document.getElementById(fileInputId).value = "";
           loadHomeData();
           loadMissions();
@@ -794,17 +794,23 @@ function hideLoading(){
   document.getElementById("loadingModal").style.display = "none";
 }
 
-function showSuccess(points, diamonds){
+function showSuccess(points, diamonds, missionType){
 
   document.querySelector(".spinner").style.display = "none";
 
-  document.getElementById("modalTitle").innerText =
-    "🎉 ส่งภารกิจสำเร็จ";
+  let streakText = "";
 
-  document.getElementById("modalText").innerHTML =
-    "ได้รับ ⭐ " + points + " คะแนน<br>" +
-    "ได้รับ 💎 " + diamonds + " เพชร<br><br>" +
-    "<button onclick='closeSuccessModal()'>ตกลง</button>";
+if(missionType == "weekly"){
+  streakText =
+    "<br><br>🔥 Streak +1<br>" +
+    "คุณรักษาความต่อเนื่องได้อีก 1 วัน!";
+}
+
+document.getElementById("modalText").innerHTML =
+  "ได้รับ ⭐ " + points + " คะแนน<br>" +
+  "ได้รับ 💎 " + diamonds + " เพชร" +
+  streakText +
+  "<br><br><button onclick='closeSuccessModal()'>ตกลง</button>";
 
 }
 
