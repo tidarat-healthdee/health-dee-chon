@@ -91,6 +91,47 @@ body{
   color:#ff9800;
   font-weight:bold;
 }
+
+#journeyMap{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px;
+  margin-top:16px;
+}
+
+.journey-node{
+  border-radius:18px;
+  padding:14px 8px;
+  text-align:center;
+  background:#f1f1f1;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+
+.journey-node.completed{
+  background:#e8f5e9;
+  color:#2e7d32;
+}
+
+.journey-node.current{
+  background:#fff3e0;
+  color:#ef6c00;
+  box-shadow:0 0 18px rgba(255,152,0,0.35);
+  transform:scale(1.05);
+}
+
+.journey-node.locked{
+  opacity:0.45;
+}
+
+.journey-week{
+  font-size:13px;
+  font-weight:bold;
+}
+
+.journey-icon{
+  font-size:26px;
+  margin-top:8px;
+}
   
 </style>
 </head>
@@ -135,6 +176,18 @@ body{
 
 </div>
 
+<div class="card">
+
+  <h3>🗺️ เส้นทางผจญภัยสุขภาพ</h3>
+
+  <div id="journeyMap">
+
+    กำลังโหลดเส้นทาง...
+
+  </div>
+
+</div>
+  
 <div class="card">
 
   <h3>📸 ประวัติภารกิจล่าสุด</h3>
@@ -208,6 +261,7 @@ try{
 }
 
 loadHistory(profile.userId);
+renderJourney(3);
 
   document.getElementById("myPoints").innerText =
     data.score.points;
@@ -281,6 +335,43 @@ async function loadHistory(userId){
   
 main();
 
+function renderJourney(currentWeek){
+
+  let html = "";
+
+  for(let i = 1; i <= 12; i++){
+
+    let status = "locked";
+    let icon = "🔒";
+
+    if(i < currentWeek){
+      status = "completed";
+      icon = "✅";
+    }
+
+    if(i == currentWeek){
+      status = "current";
+      icon = "🔥";
+    }
+
+    html += `
+      <div class="journey-node ${status}">
+        <div class="journey-week">
+          Week ${i}
+        </div>
+
+        <div class="journey-icon">
+          ${icon}
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById("journeyMap").innerHTML =
+    html;
+
+}
+  
 </script>
 <div class="bottom-nav">
   <a href="index.html">🏠<br>ภารกิจ</a>
