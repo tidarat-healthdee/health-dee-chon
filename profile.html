@@ -273,10 +273,16 @@ try{
 
 loadHistory(profile.userId);
 const weekData = await jsonp("getCurrentWeek");
-let currentWeek = Number(weekData.week || 1);
 
-if(currentWeek < 1) currentWeek = 1;
-if(currentWeek > 12) currentWeek = 12;
+let currentWeek = Number(weekData.week);
+
+if(!currentWeek || currentWeek < 1){
+  currentWeek = 1;
+}
+
+if(currentWeek > 12){
+  currentWeek = 12;
+}
 
 renderJourney(currentWeek);
   
