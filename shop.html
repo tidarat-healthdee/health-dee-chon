@@ -189,25 +189,27 @@ document.getElementById("diamondBalance").innerText =
 async function buyFreezeFromShop(){
 
   const result = await jsonp("buyFreeze", {
-  userId: currentUserId
-});
+    userId: currentUserId
+  });
 
-if(result.status == "success"){
+  if(result.status == "success"){
 
-  showShopPopup(
-    "🧊 ซื้อสำเร็จ",
-    "ได้รับ Streak Freeze +1<br>" +
-    "ใช้ 💎 30 เพชร"
-  );
+    showShopPopup(
+      "🧊 ซื้อสำเร็จ",
+      "ได้รับ Streak Freeze +1<br>" +
+      "ใช้ 💎 30 เพชร"
+    );
 
-  await initShop();
+    await initShop();
 
-}else{
+  }else{
 
-  showShopPopup(
-    "ซื้อไม่สำเร็จ",
-    result.message || "กรุณาลองใหม่อีกครั้ง"
-  );
+    showShopPopup(
+      "ซื้อไม่สำเร็จ",
+      result.message || "กรุณาลองใหม่อีกครั้ง"
+    );
+
+  }
 
 }
   
