@@ -170,16 +170,40 @@ async function loadDashboard(){
   const data = await jsonp("getAdminDashboard");
 
   document.getElementById("totalUsers").innerText =
-    data.dashboard.totalUsers || 0;
+  data.dashboard.totalUsers || 0;
 
-  document.getElementById("todaySubmits").innerText =
-    data.dashboard.totalSubmissions || 0;
+document.getElementById("activeUsersToday").innerText =
+  data.dashboard.activeUsersToday || 0;
 
-  document.getElementById("topStreak").innerText =
+document.getElementById("topStreak").innerText =
   data.dashboard.topStreak || 0;
 
-document.getElementById("freezeUsed").innerText =
-  data.dashboard.activeUsersToday || 0;
+document.getElementById("basicToday").innerText =
+  data.dashboard.basicSubmitsToday || 0;
+
+document.getElementById("weeklyToday").innerText =
+  data.dashboard.weeklySubmitsToday || 0;
+
+document.getElementById("basicRate").innerText =
+  (data.dashboard.basicCompletionRate || 0) + "%";
+
+document.getElementById("weeklyRate").innerText =
+  (data.dashboard.weeklyCompletionRate || 0) + "%";
+
+document.getElementById("freezePurchases").innerText =
+  data.dashboard.freezePurchases || 0;
+
+document.getElementById("mostSkippedDay").innerText =
+  data.dashboard.mostSkippedDay || "-";
+
+let topHtml = "";
+
+data.dashboard.topActiveUsers.forEach(function(user, index){
+  topHtml += "#" + (index + 1) + " " + user.name + " - " + user.count + " ครั้ง<br>";
+});
+
+document.getElementById("topActiveUsers").innerHTML =
+  topHtml || "-";
 
 }
 
