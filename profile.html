@@ -250,13 +250,20 @@ async function loadHistory(userId){
   data.submissions.forEach(function(item){
 
     html += `
-      <div style="padding:12px 0;border-bottom:1px solid #eee;">
-        <b>${item.mission}</b><br>
-        <span style="font-size:13px;color:#777;">
-          ${item.missionType} | ⭐ ${item.points} | 💎 ${item.diamonds}
-        </span>
-      </div>
-    `;
+  <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee;align-items:center;">
+    
+    <img src="${item.imageUrl}" 
+      style="width:64px;height:64px;border-radius:14px;object-fit:cover;background:#eee;">
+
+    <div>
+      <b>${item.mission}</b><br>
+      <span style="font-size:13px;color:#777;">
+        ${item.missionType} | ⭐ ${item.points} | 💎 ${item.diamonds}
+      </span>
+    </div>
+
+  </div>
+`;
 
   });
 
