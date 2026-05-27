@@ -190,9 +190,11 @@ hr{
 
   margin-bottom:18px;
 
+  transform:translateY(-2px);
+
   box-shadow:
-    0 14px 30px rgba(0,0,0,0.16),
-    0 0 18px rgba(76,175,80,0.18);
+  0 18px 36px rgba(0,0,0,0.20),
+  0 0 26px rgba(76,175,80,0.28);
 
   backdrop-filter: blur(6px);
 
@@ -375,14 +377,6 @@ hr{
 
 <hr>
 
-<h3>อันดับในบริษัท</h3>
-<div id="leaderboardBox">กำลังโหลดอันดับ...</div>
-
-<hr>
-
-<h3>Admin Dashboard</h3>
-<div id="adminDashboard">กำลังโหลดข้อมูล...</div>
-
 </div>
 
 <script>
@@ -478,8 +472,7 @@ async function loadHomeData(){
     "สัปดาห์ที่ " + data.mission.week + " : " + data.mission.mission;
 
   updateScoreDisplay(data.score);
-  updateLeaderboard(data.leaderboard);
-  updateDashboard(data.dashboard);
+  
 }
 
 function updateScoreDisplay(score){
