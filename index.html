@@ -169,59 +169,54 @@ hr{
 }
 
 .app-header{
-  position:relative;
-  overflow:hidden;
-  background:linear-gradient(135deg,#e8f5e9,#fff3e0,#e3f2fd);
-  border-radius:30px;
-  padding:24px 20px;
-  margin-bottom:22px;
-  text-align:center;
-  box-shadow:0 12px 30px rgba(46,125,50,0.18);
-}
-
-.header-bg-glow{
-  position:absolute;
-  width:180px;
-  height:180px;
-  background:rgba(255,152,0,0.20);
-  border-radius:50%;
-  top:-60px;
-  right:-60px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:linear-gradient(135deg,#e8f5e9,#fff8e1,#e3f2fd);
+  border-radius:24px;
+  padding:16px;
+  margin-bottom:18px;
+  box-shadow:0 10px 24px rgba(46,125,50,0.16);
+  border:1px solid rgba(255,255,255,0.8);
 }
 
 .header-logo-img{
-  position:relative;
-  width:110px;
-  height:110px;
+  width:76px;
+  height:76px;
   border-radius:50%;
   object-fit:cover;
   background:white;
-  padding:8px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.15);
+  padding:5px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.14);
+  flex-shrink:0;
 }
 
 .header-content{
-  position:relative;
-  margin-top:14px;
+  flex:1;
 }
 
 .header-title{
-  font-size:30px;
+  font-size:23px;
   font-weight:bold;
   color:#1b5e20;
+  line-height:1.1;
 }
 
 .header-subtitle{
-  font-size:16px;
-  color:#1565c0;
-  margin-top:4px;
+  display:inline-block;
+  font-size:13px;
+  color:white;
+  background:linear-gradient(90deg,#1e88e5,#66bb6a);
+  padding:4px 10px;
+  border-radius:999px;
+  margin-top:6px;
   font-weight:bold;
 }
 
 .header-tagline{
-  font-size:14px;
+  font-size:13px;
   color:#666;
-  margin-top:6px;
+  margin-top:7px;
 }
   
 </style>
@@ -229,8 +224,6 @@ hr{
 
 <body>
 <div class="app-header">
-  <div class="header-bg-glow"></div>
-
   <img src="logo.png" class="header-logo-img">
 
   <div class="header-content">
@@ -241,8 +234,6 @@ hr{
 </div>
   
 <div class="hero">
-  <div class="title">Health Dee CHON</div>
-  <div style="margin-top:8px;">Wellness Challenge Platform</div>
   <div id="status" style="margin-top:16px;">กำลังเชื่อมต่อ LINE...</div>
 
   <div class="card">
