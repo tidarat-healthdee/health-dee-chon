@@ -261,7 +261,8 @@ try{
 }
 
 loadHistory(profile.userId);
-renderJourney(3);
+const weekData = await jsonp("getCurrentWeek");
+renderJourney(weekData.week);
 
   document.getElementById("myPoints").innerText =
     data.score.points;
