@@ -242,6 +242,24 @@ hr{
 
   pointer-events:none;
 }
+
+.app-header-pattern{
+  position:absolute;
+
+  inset:0;
+
+  background-image:
+    radial-gradient(
+      rgba(255,255,255,0.20) 1px,
+      transparent 1px
+    );
+
+  background-size:18px 18px;
+
+  opacity:0.35;
+
+  pointer-events:none;
+}
   
 .header-logo-img{
   width:76px;
@@ -285,10 +303,24 @@ hr{
 
   color:white;
 
-  background:linear-gradient(
-    90deg,
-    #1e88e5,
-    #66bb6a
+  background:
+  radial-gradient(
+    circle at top right,
+    rgba(255,255,255,0.55),
+    transparent 28%
+  ),
+
+  radial-gradient(
+    circle at bottom left,
+    rgba(255,255,255,0.35),
+    transparent 24%
+  ),
+
+  linear-gradient(
+    135deg,
+    #e8f5e9 0%,
+    #fff8e1 48%,
+    #e3f2fd 100%
   );
 
   padding:4px 10px;
@@ -313,6 +345,8 @@ hr{
 
 <body>
 <div class="app-header">
+
+  <div class="app-header-pattern"></div>
 
   <img src="logo.png" class="header-logo-img">
 
