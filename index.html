@@ -167,13 +167,60 @@ hr{
   text-align:center;
   font-weight:bold;
 }
+
+.app-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:linear-gradient(135deg,#e8f5e9,#fff3e0);
+  border-radius:24px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.header-logo{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+}
+
+.header-title{
+  font-size:24px;
+  font-weight:bold;
+  color:#2e7d32;
+}
+
+.header-subtitle{
+  font-size:14px;
+  color:#666;
+  margin-top:4px;
+}
   
 </style>
 </head>
 
 <body>
 <div class="app">
+  <div class="app-header">
+    <div class="header-logo">🌱</div>
 
+    <div>
+      <div class="header-title">
+        Health Dee CHON
+      </div>
+
+      <div class="header-subtitle">
+        Better Health, Better You
+      </div>
+    </div>
+  </div>
+  
 <div class="hero">
   <div class="title">Health Dee CHON</div>
   <div style="margin-top:8px;">Wellness Challenge Platform</div>
