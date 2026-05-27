@@ -809,15 +809,28 @@ function hideLoading(){
 }
 
 function showSuccess(points, diamonds){
-  document.querySelector(".spinner").style.display = "none";
-  document.getElementById("modalTitle").innerText = "🎉 ส่งภารกิจสำเร็จ";
-  document.getElementById("modalText").innerText =
-    "ได้รับ ⭐ " + points + " คะแนน และ 💎 " + diamonds + " เพชร";
 
-  setTimeout(function(){
-    document.querySelector(".spinner").style.display = "block";
-    hideLoading();
-  }, 2200);
+  document.querySelector(".spinner").style.display = "none";
+
+  document.getElementById("modalTitle").innerText =
+    "🎉 ส่งภารกิจสำเร็จ";
+
+  document.getElementById("modalText").innerHTML =
+    "ได้รับ ⭐ " + points + " คะแนน<br>" +
+    "ได้รับ 💎 " + diamonds + " เพชร<br><br>" +
+    "<button onclick='closeSuccessModal()'>ตกลง</button>";
+
+}
+
+function closeSuccessModal(){
+
+  document.querySelector(".spinner").style.display = "block";
+
+  hideLoading();
+
+  loadHomeData();
+  loadMissions();
+
 }
   
 main();
