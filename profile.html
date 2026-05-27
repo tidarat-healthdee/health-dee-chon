@@ -273,8 +273,13 @@ try{
 
 loadHistory(profile.userId);
 const weekData = await jsonp("getCurrentWeek");
-renderJourney(weekData.week);
+let currentWeek = Number(weekData.week || 1);
 
+if(currentWeek < 1) currentWeek = 1;
+if(currentWeek > 12) currentWeek = 12;
+
+renderJourney(currentWeek);
+  
   document.getElementById("myPoints").innerText =
     data.score.points;
 
