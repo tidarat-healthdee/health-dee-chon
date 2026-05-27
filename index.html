@@ -169,57 +169,76 @@ hr{
 }
 
 .app-header{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  background:linear-gradient(135deg,#e8f5e9,#fff3e0);
-  border-radius:24px;
-  padding:18px;
-  margin-bottom:18px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#e8f5e9,#fff3e0,#e3f2fd);
+  border-radius:30px;
+  padding:24px 20px;
+  margin-bottom:22px;
+  text-align:center;
+  box-shadow:0 12px 30px rgba(46,125,50,0.18);
 }
 
-.header-logo{
-  width:56px;
-  height:56px;
+.header-bg-glow{
+  position:absolute;
+  width:180px;
+  height:180px;
+  background:rgba(255,152,0,0.20);
   border-radius:50%;
+  top:-60px;
+  right:-60px;
+}
+
+.header-logo-img{
+  position:relative;
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
   background:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:30px;
+  padding:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.15);
+}
+
+.header-content{
+  position:relative;
+  margin-top:14px;
 }
 
 .header-title{
-  font-size:24px;
+  font-size:30px;
   font-weight:bold;
-  color:#2e7d32;
+  color:#1b5e20;
 }
 
 .header-subtitle{
+  font-size:16px;
+  color:#1565c0;
+  margin-top:4px;
+  font-weight:bold;
+}
+
+.header-tagline{
   font-size:14px;
   color:#666;
-  margin-top:4px;
+  margin-top:6px;
 }
   
 </style>
 </head>
 
 <body>
-<div class="app">
-  <div class="app-header">
-    <div class="header-logo">🌱</div>
+<div class="app-header">
+  <div class="header-bg-glow"></div>
 
-    <div>
-      <div class="header-title">
-        Health Dee CHON
-      </div>
+  <img src="logo.png" class="header-logo-img">
 
-      <div class="header-subtitle">
-        Better Health, Better You
-      </div>
-    </div>
+  <div class="header-content">
+    <div class="header-title">Health Dee CHON</div>
+    <div class="header-subtitle">Wellness Challenge Platform</div>
+    <div class="header-tagline">Better Health, Better You 🌱</div>
   </div>
+</div>
   
 <div class="hero">
   <div class="title">Health Dee CHON</div>
