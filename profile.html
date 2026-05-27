@@ -135,6 +135,16 @@ body{
 
 </div>
 
+<div class="card">
+
+  <h3>📸 ประวัติภารกิจล่าสุด</h3>
+
+  <div id="historyList">
+    กำลังโหลดประวัติ...
+  </div>
+
+</div>
+  
 <script>
 
 const LIFF_ID = "2010154691-Lfwg705W";
@@ -197,6 +207,8 @@ try{
   return;
 }
 
+loadHistory(profile.userId);
+
   document.getElementById("myPoints").innerText =
     data.score.points;
 
@@ -223,6 +235,35 @@ document.getElementById("badgeBox").innerHTML = badge;
 
 }
 
+async function loadHistory(userId){
+
+  const data = await jsonp("getUserSubmissions", {
+    userId: userId
+  });
+
+  let html = "";
+
+  if(data.submissions.length == 0){
+    html = "ยังไม่มีประวัติการส่งภารกิจ";
+  }
+
+  data.submissions.forEach(function(item){
+
+    html += `
+      <div style="padding:12px 0;border-bottom:1px solid #eee;">
+        <b>${item.mission}</b><br>
+        <span style="font-size:13px;color:#777;">
+          ${item.missionType} | ⭐ ${item.points} | 💎 ${item.diamonds}
+        </span>
+      </div>
+    `;
+
+  });
+
+  document.getElementById("historyList").innerHTML = html;
+
+}
+  
 main();
 
 </script>
