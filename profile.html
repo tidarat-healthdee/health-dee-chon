@@ -235,6 +235,14 @@ document.getElementById("badgeBox").innerHTML = badge;
 
 }
 
+function getDriveImageUrl(url){
+  const match = url.match(/\/d\/(.*?)\//);
+  if(match && match[1]){
+    return "https://drive.google.com/thumbnail?id=" + match[1];
+  }
+  return url;
+}
+  
 async function loadHistory(userId){
 
   const data = await jsonp("getUserSubmissions", {
@@ -252,7 +260,7 @@ async function loadHistory(userId){
     html += `
   <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee;align-items:center;">
     
-    <img src="${item.imageUrl}" 
+    <img src="${getDriveImageUrl(item.imageUrl)}" 
       style="width:64px;height:64px;border-radius:14px;object-fit:cover;background:#eee;">
 
     <div>
