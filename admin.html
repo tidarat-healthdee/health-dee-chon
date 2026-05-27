@@ -62,6 +62,22 @@ body{
   margin-top:10px;
 }
 
+.section-title{
+  margin-top:28px;
+  font-size:20px;
+  font-weight:bold;
+  color:#333;
+}
+
+.insight-card{
+  background:#fff;
+  border-radius:22px;
+  padding:20px;
+  margin-top:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  line-height:1.6;
+}
+  
 </style>
 
 </head>
@@ -74,6 +90,8 @@ body{
     <h1>📊 Admin Dashboard</h1>
     <p>Wellness Challenge Management</p>
   </div>
+
+  <div class="section-title">📌 ภาพรวมวันนี้</div>
 
   <div class="grid">
 
@@ -119,11 +137,15 @@ body{
 
 </div>
 
+<div class="section-title">🔥 Engagement</div>
+  
 <div class="card" style="margin-top:20px;">
   <div class="card-title">Top Active Users</div>
   <div id="topActiveUsers" style="margin-top:12px;">-</div>
 </div>
 
+<div class="section-title">💡 Insight</div>
+  
 <div class="card" style="margin-top:20px;">
   <div class="card-title">วันที่กิจกรรมต่ำสุด</div>
   <div class="card-value" id="mostSkippedDay">-</div>
