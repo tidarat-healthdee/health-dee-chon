@@ -255,9 +255,17 @@ for(let i = 0; i < rest.length; i++){
   html += `
     <div class="rank-card">
       <div class="rank-left">
-        <div class="rank-no">#${i + 4}</div>
-        <div class="rank-name">${rest[i].name}</div>
-      </div>
+  <div class="rank-no">#${i + 4}</div>
+
+  <div>
+    <div class="rank-name">${rest[i].name}</div>
+
+    <div style="font-size:12px;color:#777;margin-top:3px;">
+      ${rest[i].badge || ""}
+    </div>
+  </div>
+
+</div>
       <div class="rank-point">
         ${rest[i].points} คะแนน
       </div>
@@ -275,13 +283,19 @@ function createPodiumCard(user, medal, rankClass){
   const img = user.pictureUrl || "https://via.placeholder.com/100";
 
   return `
-    <div class="podium-card ${rankClass}">
-      <div class="medal">${medal}</div>
-      <img class="podium-avatar" src="${img}">
-      <div class="podium-name">${user.name}</div>
-      <div class="podium-points">${user.points} คะแนน</div>
+  <div class="podium-card ${rankClass}">
+    <div class="medal">${medal}</div>
+    <img class="podium-avatar" src="${img}">
+    
+    <div class="podium-name">${user.name}</div>
+
+    <div style="font-size:12px;margin-top:4px;">
+      ${user.badge || ""}
     </div>
-  `;
+
+    <div class="podium-points">${user.points} คะแนน</div>
+  </div>
+`;
 }
   
 initLeaderboard();
