@@ -400,6 +400,53 @@ hr{
     0 6px 18px rgba(67,160,71,0.22),
     inset 0 1px 0 rgba(255,255,255,0.18);
 }
+
+.score-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+}
+
+.score-left{
+  flex:1;
+}
+
+.score-label{
+  font-size:14px;
+  color:#777;
+}
+
+.score-number{
+  font-size:38px;
+  font-weight:800;
+  color:#ff9800;
+  line-height:1;
+  margin-top:6px;
+}
+
+.score-unit{
+  font-size:13px;
+  color:#999;
+  margin-top:4px;
+}
+
+.score-right{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-width:88px;
+}
+
+.resource-pill{
+  background:#fff3e0;
+  border-radius:999px;
+  padding:8px 12px;
+  font-size:15px;
+  font-weight:bold;
+  text-align:center;
+  color:#ef6c00;
+}
   
 </style>
 </head>
@@ -430,13 +477,20 @@ hr{
 <div class="hero">
   <div id="status" style="margin-top:16px;">กำลังเชื่อมต่อ LINE...</div>
 
-  <div class="card">
-    <div>คะแนนของคุณ</div>
-    <div id="myPoints" style="font-size:36px;font-weight:bold;color:#ff9800;">0</div>
-    <div id="myStreak">🔥 0 Day Streak</div>
-    <div id="myFreeze" style="margin-top:6px;">🧊 Streak Freeze: 0</div>
-    <div id="myDiamonds" style="margin-top:6px;">
-  💎 0 Diamonds
+  <div class="card score-card">
+
+  <div class="score-left">
+    <div class="score-label">คะแนนของคุณ</div>
+    <div id="myPoints" class="score-number">0</div>
+    <div class="score-unit">คะแนน</div>
+  </div>
+
+  <div class="score-right">
+    <div id="myStreak" class="resource-pill">🔥 0</div>
+    <div id="myFreeze" class="resource-pill">🧊 0</div>
+    <div id="myDiamonds" class="resource-pill">💎 0</div>
+  </div>
+
 </div>
   
     <div id="myLevel" style="margin-top:10px;font-weight:bold;">Level: Beginner</div>
@@ -596,10 +650,14 @@ async function loadHomeData(){
 function updateScoreDisplay(score){
 
   document.getElementById("myPoints").innerText = score.points;
-  document.getElementById("myStreak").innerText = "🔥 " + score.streak + " Day Streak";
-  document.getElementById("myFreeze").innerText = "🧊 Streak Freeze: " + score.freeze;
-  document.getElementById("myDiamonds").innerText =
-  "💎 " + (score.diamonds || 0) + " Diamonds";
+  document.getElementById("myStreak").innerText =
+  "🔥 " + score.streak;
+
+document.getElementById("myFreeze").innerText =
+  "🧊 " + score.freeze;
+
+document.getElementById("myDiamonds").innerText =
+  "💎 " + (score.diamonds || 0);
 
   updateLevel(Number(score.points));
   updateBadges(Number(score.points), Number(score.streak));
