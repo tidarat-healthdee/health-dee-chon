@@ -298,6 +298,15 @@ hr{
 
   margin-top:7px;
 }
+
+#rescuePopup button{
+  border:none;
+  border-radius:14px;
+  padding:14px;
+  color:white;
+  font-size:15px;
+  font-weight:bold;
+}
   
 </style>
 </head>
@@ -839,12 +848,86 @@ async function checkStreakRescue(){
     return;
   }
 
-  alert(
-    "🔥 Streak ของคุณใกล้ขาด\n\n" +
-    "คุณมี Streak อยู่ " + status.streak + " วัน\n" +
-    "ต้องการใช้ Streak Freeze เพื่อรักษาไฟไหม?"
-  );
+  showRescuePopup(status);
 
+}
+
+function showRescuePopup(status){
+
+  const popup = document.createElement("div");
+
+  let actionButton = "";
+
+  if(status.canUseFreeze){
+    actionButton = `
+      <button onclick="useFreezeToRescue()" style="background:#1e88e5;">
+        ใช้ 🧊 Streak Freeze
+      </button>
+    `;
+  }else if(status.canBuyFreeze){
+    actionButton = `
+      <button onclick="buyFreezeToRescue()" style="background:#ff9800;">
+        ใช้ 30 💎 ซื้อ Freeze เพื่อรักษาไฟ
+      </button>
+    `;
+  }else{
+    actionButton = `
+      <button onclick="closeRescuePopup()" style="background:#999;">
+        รับทราบ
+      </button>
+    `;
+  }
+
+  popup.id = "rescuePopup";
+
+  popup.innerHTML = `
+    <div style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+    ">
+      <div style="
+        background:white;
+        width:85%;
+        max-width:340px;
+        border-radius:24px;
+        padding:24px;
+        text-align:center;
+        box-shadow:0 14px 40px rgba(0,0,0,0.22);
+      ">
+        <div style="font-size:42px;">🔥</div>
+
+        <h3>Streak ของคุณใกล้ขาด</h3>
+
+        <p style="line-height:1.6;color:#555;">
+          คุณมี Streak อยู่ ${status.streak} วัน<br>
+          ต้องการรักษาไฟต่อไหม?
+        </p>
+
+        <div style="display:grid;gap:10px;margin-top:18px;">
+          ${actionButton}
+
+          <button onclick="closeRescuePopup()" style="background:#e0e0e0;color:#333;">
+            ไว้ก่อน
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+}
+
+function closeRescuePopup(){
+  const popup = document.getElementById("rescuePopup");
+  if(popup){
+    popup.remove();
+  }
 }
   
 main();
