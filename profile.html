@@ -317,7 +317,7 @@ try{
 }
 
 loadHistory(profile.userId);
-renderBadges(data);
+await renderBadges(data);
 const weekData = await jsonp("getCurrentWeek");
 
 let currentWeek = Number(weekData.week);
@@ -444,7 +444,7 @@ function renderJourney(currentWeek){
 
 }
 
-function renderBadges(data){
+async function renderBadges(data){
 
   const streak = Number(data.score.streak || 0);
   const diamonds = Number(data.score.diamonds || 0);
@@ -481,8 +481,18 @@ function renderBadges(data){
   let html = "";
 
   badges.forEach(function(badge){
-  if(badge.unlocked && badge.name == "7 Day Warrior"){
-  showBadgePopup(badge.name, badge.icon);
+  if(badge.unlocked){
+
+  const saveResult = await jsonp("saveBadge", {
+    userId: currentUserId,
+    badgeName: badge.name,
+    icon: badge.icon
+  });
+
+  if(saveResult.status == "badge_saved"){
+    showBadgePopup(badge.name, badge.icon);
+  }
+
 }
 
     html += `
