@@ -307,6 +307,54 @@ hr{
   font-size:15px;
   font-weight:bold;
 }
+
+.welcome-card{
+  background:linear-gradient(135deg,#ff9800,#ffb74d);
+  border-radius:28px;
+  padding:22px;
+  color:white;
+  box-shadow:0 10px 28px rgba(255,152,0,0.28);
+  margin-bottom:22px;
+}
+
+.welcome-top{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.welcome-icon{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.22);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  backdrop-filter:blur(6px);
+}
+
+.welcome-title{
+  font-size:14px;
+  opacity:0.92;
+}
+
+.welcome-name{
+  margin-top:4px;
+  font-size:24px;
+  font-weight:bold;
+  line-height:1.3;
+}
+
+.welcome-subtitle{
+  margin-top:18px;
+  font-size:14px;
+  line-height:1.6;
+  background:rgba(255,255,255,0.16);
+  padding:12px 14px;
+  border-radius:16px;
+}
   
 </style>
 </head>
@@ -436,9 +484,35 @@ if(!reg.registered){
   return;
 }
 
-    status.innerHTML =
-      "สวัสดีคุณ " + profile.displayName + "<br><br>" +
-      "LINE User ID:<br>" + profile.userId;
+    status.innerHTML = `
+  <div class="welcome-card">
+
+    <div class="welcome-top">
+
+      <div class="welcome-icon">
+        🌟
+      </div>
+
+      <div>
+
+        <div class="welcome-title">
+          Welcome Back!
+        </div>
+
+        <div class="welcome-name">
+          สวัสดีคุณ ${profile.displayName}
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="welcome-subtitle">
+      💪 พร้อมพิชิตภารกิจสุขภาพวันนี้ไหม?
+    </div>
+
+  </div>
+`;
 
     fetch(GAS_URL, {
       method:"POST",
