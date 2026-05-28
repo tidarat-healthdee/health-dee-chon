@@ -939,7 +939,10 @@ async function useFreezeToRescue(){
 
     closeRescuePopup();
 
-    alert("🧊 ใช้ Streak Freeze สำเร็จ\nStreak ของคุณได้รับการป้องกันแล้ว");
+    showSuccessPopup(
+  "🧊 ใช้ Streak Freeze สำเร็จ",
+  "Streak ของคุณได้รับการป้องกันแล้ว"
+);
 
     await loadHomeData();
 
@@ -948,6 +951,59 @@ async function useFreezeToRescue(){
     alert("ไม่สามารถใช้ Freeze ได้ กรุณาลองใหม่");
 
   }
+
+}
+
+function showSuccessPopup(title, message){
+
+  const popup = document.createElement("div");
+
+  popup.innerHTML = `
+    <div style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:99999;
+    ">
+      <div style="
+        background:white;
+        width:80%;
+        max-width:320px;
+        border-radius:24px;
+        padding:24px;
+        text-align:center;
+        box-shadow:0 14px 40px rgba(0,0,0,0.22);
+      ">
+        <div style="font-size:42px;">🧊</div>
+
+        <h3>${title}</h3>
+
+        <p style="color:#666;line-height:1.6;">
+          ${message}
+        </p>
+
+        <button onclick="this.closest('div').parentElement.remove()"
+          style="
+            margin-top:18px;
+            width:100%;
+            border:none;
+            border-radius:14px;
+            padding:14px;
+            background:#1e88e5;
+            color:white;
+            font-size:16px;
+            font-weight:bold;
+          ">
+          เยี่ยมเลย!
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
 
 }
   
