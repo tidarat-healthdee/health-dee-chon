@@ -227,6 +227,79 @@ body{
     0 0 0 4px #ffca28,
     0 0 26px rgba(255,202,40,0.70);
 }
+
+#profilePic{
+  animation: avatarFloat 3s ease-in-out infinite;
+}
+
+@keyframes avatarFloat{
+  0%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-6px);
+  }
+  100%{
+    transform:translateY(0);
+  }
+}
+
+.profile img.starter{
+  animation:
+    avatarFloat 3s ease-in-out infinite,
+    starterGlow 2.2s ease-in-out infinite;
+}
+
+.profile img.hero{
+  animation:
+    avatarFloat 3s ease-in-out infinite,
+    heroGlow 2.2s ease-in-out infinite;
+}
+
+.profile img.champion{
+  animation:
+    avatarFloat 3s ease-in-out infinite,
+    championGlow 2.2s ease-in-out infinite;
+}
+
+@keyframes starterGlow{
+  0%,100%{
+    box-shadow:
+      0 0 0 4px #29b6f6,
+      0 0 16px rgba(41,182,246,0.45);
+  }
+  50%{
+    box-shadow:
+      0 0 0 4px #29b6f6,
+      0 0 30px rgba(41,182,246,0.75);
+  }
+}
+
+@keyframes heroGlow{
+  0%,100%{
+    box-shadow:
+      0 0 0 4px #ab47bc,
+      0 0 18px rgba(171,71,188,0.45);
+  }
+  50%{
+    box-shadow:
+      0 0 0 4px #ab47bc,
+      0 0 32px rgba(171,71,188,0.75);
+  }
+}
+
+@keyframes championGlow{
+  0%,100%{
+    box-shadow:
+      0 0 0 4px #ffca28,
+      0 0 20px rgba(255,202,40,0.50);
+  }
+  50%{
+    box-shadow:
+      0 0 0 4px #ffca28,
+      0 0 36px rgba(255,202,40,0.85);
+  }
+}
   
 </style>
 </head>
