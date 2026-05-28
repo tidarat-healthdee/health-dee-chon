@@ -461,6 +461,7 @@ async function loadHomeData(){
     "สัปดาห์ที่ " + data.mission.week + " : " + data.mission.mission;
 
   updateScoreDisplay(data.score);
+  checkStreakRescue();
   
 }
 
@@ -474,6 +475,7 @@ function updateScoreDisplay(score){
 
   updateLevel(Number(score.points));
   updateBadges(Number(score.points), Number(score.streak));
+
 }
 
 function updateLeaderboard(list){
@@ -824,6 +826,24 @@ function closeSuccessModal(){
 
   loadHomeData();
   loadMissions();
+
+}
+
+async function checkStreakRescue(){
+
+  const status = await jsonp("getStreakRescueStatus", {
+    userId: currentUserId
+  });
+
+  if(!status.needRescue){
+    return;
+  }
+
+  alert(
+    "🔥 Streak ของคุณใกล้ขาด\n\n" +
+    "คุณมี Streak อยู่ " + status.streak + " วัน\n" +
+    "ต้องการใช้ Streak Freeze เพื่อรักษาไฟไหม?"
+  );
 
 }
   
