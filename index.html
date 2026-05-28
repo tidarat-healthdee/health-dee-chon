@@ -737,9 +737,7 @@ function updateBadges(points, streak){
   if(points >= 100) badges.push("🌱 Healthy Starter");
   if(points >= 300) badges.push("🥗 Wellness Hero");
   if(points >= 600) badges.push("🏆 Health Champion");
-  if(streak >= 3) badges.push("🔥 ไฟลุก 3 วัน");
-  if(streak >= 7) badges.push("🔥🔥 ไฟลุก 7 วัน");
-
+  
   if(badges.length == 0){
     badges.push("เริ่มสะสม Badge แรกกันเลย!");
   }
