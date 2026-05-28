@@ -317,7 +317,7 @@ try{
 }
 
 loadHistory(profile.userId);
-await renderBadges(data);
+renderBadges(data);
 const weekData = await jsonp("getCurrentWeek");
 
 let currentWeek = Number(weekData.week);
@@ -444,7 +444,7 @@ function renderJourney(currentWeek){
 
 }
 
-async function renderBadges(data){
+function renderBadges(data){
 
   const streak = Number(data.score.streak || 0);
   const diamonds = Number(data.score.diamonds || 0);
@@ -482,16 +482,6 @@ async function renderBadges(data){
 
   for(const badge of badges){
   if(badge.unlocked){
-
-  const saveResult = await jsonp("saveBadge", {
-    userId: currentUserId,
-    badgeName: badge.name,
-    icon: badge.icon
-  }
-
-  if(saveResult.status == "badge_saved"){
-    showBadgePopup(badge.name, badge.icon);
-  }
 
 }
 
