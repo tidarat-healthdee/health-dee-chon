@@ -451,58 +451,26 @@ function renderBadges(data){
   const points = Number(data.score.points || 0);
 
   const badges = [
-
-    {
-      icon:"🌱",
-      name:"Wellness Beginner",
-      unlocked:true
-    },
-
-    {
-      icon:"🔥",
-      name:"7 Day Warrior",
-      unlocked: streak >= 7
-    },
-
-    {
-      icon:"💎",
-      name:"Diamond Collector",
-      unlocked: diamonds >= 100
-    },
-
-    {
-      icon:"🏆",
-      name:"Point Master",
-      unlocked: points >= 500
-    }
-
+    { icon:"🌱", name:"Wellness Beginner", unlocked:true },
+    { icon:"🔥", name:"7 Day Warrior", unlocked: streak >= 7 },
+    { icon:"💎", name:"Diamond Collector", unlocked: diamonds >= 100 },
+    { icon:"🏆", name:"Point Master", unlocked: points >= 500 }
   ];
 
   let html = "";
 
-  for(const badge of badges){
-  if(badge.unlocked){
-
-}
+  badges.forEach(function(badge){
 
     html += `
       <div class="badge-item ${badge.unlocked ? "unlocked" : "locked"}">
-
-        <div class="badge-icon">
-          ${badge.icon}
-        </div>
-
-        <div class="badge-name">
-          ${badge.name}
-        </div>
-
+        <div class="badge-icon">${badge.icon}</div>
+        <div class="badge-name">${badge.name}</div>
       </div>
     `;
 
   });
 
-  document.getElementById("badgeCollection").innerHTML =
-    html;
+  document.getElementById("badgeCollection").innerHTML = html;
 
 }
 
