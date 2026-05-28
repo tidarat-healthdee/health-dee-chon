@@ -123,7 +123,21 @@ body{
 </div>
 
 </div>
+  
+<div class="card" style="margin-top:20px;">
 
+  <h3>🧊 ประวัติซื้อน้ำแข็ง</h3>
+
+  <div id="freezeMonthSummary">
+    กำลังโหลดข้อมูล...
+  </div>
+
+  <div id="freezeHistory" style="margin-top:12px;">
+    กำลังโหลดประวัติ...
+  </div>
+
+</div>
+  
 <div class="bottom-nav">
   <a href="index.html">🏠<br>ภารกิจ</a>
   <a href="leaderboard.html">🏆<br>อันดับ</a>
@@ -183,6 +197,7 @@ async function initShop(){
 
 document.getElementById("diamondBalance").innerText =
   "💎 เพชรของคุณ: " + (data.score.diamonds || 0);
+  loadFreezeHistory();
 
 }
 
@@ -270,6 +285,59 @@ function showShopPopup(title, message){
   `;
 
   document.body.appendChild(popup);
+
+}
+
+async function loadFreezeHistory(){
+
+  const data = await jsonp("getFreezePurchaseHistory", {
+    userId: currentUserId
+  });
+
+  document.getElementById("freezeMonthSummary").innerHTML =
+    "เดือนนี้ซื้อแล้ว <b>" +
+    data.boughtThisMonth +
+    "</b> / 3 ก้อน";
+
+  let html = "";
+
+  if(data.history.length == 0){
+
+    html = `
+      <div style="color:#777;">
+        ยังไม่มีประวัติการซื้อ
+      </div>
+    `;
+
+  }else{
+
+    data.history.forEach(function(item){
+
+      html += `
+        <div style="
+          background:#f7f7f7;
+          border-radius:14px;
+          padding:12px;
+          margin-bottom:10px;
+        ">
+
+          <div style="font-weight:bold;">
+            🧊 ซื้อ Streak Freeze
+          </div>
+
+          <div style="font-size:13px;color:#666;margin-top:4px;">
+            ใช้ ${item.diamondsUsed} 💎
+          </div>
+
+        </div>
+      `;
+
+    });
+
+  }
+
+  document.getElementById("freezeHistory").innerHTML =
+    html;
 
 }
   
