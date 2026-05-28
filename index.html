@@ -457,12 +457,12 @@ async function loadHomeData(){
     userId: currentUserId
   });
 
-  loadMissions();
-    "สัปดาห์ที่ " + data.mission.week + " : " + data.mission.mission;
-
   updateScoreDisplay(data.score);
+
+  await loadMissions();
+
   checkStreakRescue();
-  
+
 }
 
 function updateScoreDisplay(score){
