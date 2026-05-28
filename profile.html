@@ -190,6 +190,22 @@ body{
   font-weight:bold;
   box-shadow:0 4px 12px rgba(67,160,71,0.25);
 }
+
+.avatar-evolution.beginner{
+  background:linear-gradient(135deg,#66bb6a,#43a047);
+}
+
+.avatar-evolution.starter{
+  background:linear-gradient(135deg,#29b6f6,#1e88e5);
+}
+
+.avatar-evolution.hero{
+  background:linear-gradient(135deg,#ab47bc,#7e57c2);
+}
+
+.avatar-evolution.champion{
+  background:linear-gradient(135deg,#ffca28,#ff9800);
+}
   
 </style>
 </head>
@@ -580,16 +596,23 @@ async function checkNewBadges(data, userId){
 function updateAvatarEvolution(points){
 
   let avatar = "🌱 Beginner";
+  let className = "avatar-evolution beginner";
 
   if(points >= 600){
     avatar = "👑 Health Champion";
+    className = "avatar-evolution champion";
   }else if(points >= 300){
     avatar = "🧘 Wellness Hero";
+    className = "avatar-evolution hero";
   }else if(points >= 100){
     avatar = "🏃 Healthy Starter";
+    className = "avatar-evolution starter";
   }
 
-  document.getElementById("avatarEvolution").innerText = avatar;
+  const el = document.getElementById("avatarEvolution");
+
+  el.innerText = avatar;
+  el.className = className;
 
 }
   
