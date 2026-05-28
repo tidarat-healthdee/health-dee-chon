@@ -929,6 +929,27 @@ function closeRescuePopup(){
     popup.remove();
   }
 }
+async function useFreezeToRescue(){
+
+  const result = await jsonp("useFreezeToRescue", {
+    userId: currentUserId
+  });
+
+  if(result.status == "success"){
+
+    closeRescuePopup();
+
+    alert("🧊 ใช้ Streak Freeze สำเร็จ\nStreak ของคุณได้รับการป้องกันแล้ว");
+
+    await loadHomeData();
+
+  }else{
+
+    alert("ไม่สามารถใช้ Freeze ได้ กรุณาลองใหม่");
+
+  }
+
+}
   
 main();
 </script>
