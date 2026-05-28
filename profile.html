@@ -143,6 +143,41 @@ body{
   font-weight:bold;
   text-align:center;
 }
+
+#badgeCollection{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+}
+
+.badge-item{
+  border-radius:18px;
+  padding:14px 10px;
+  text-align:center;
+  background:#f5f5f5;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+
+.badge-item.unlocked{
+  background:#fff8e1;
+  color:#ef6c00;
+}
+
+.badge-item.locked{
+  opacity:0.4;
+  filter:grayscale(1);
+}
+
+.badge-icon{
+  font-size:30px;
+}
+
+.badge-name{
+  margin-top:6px;
+  font-size:13px;
+  font-weight:bold;
+}
   
 </style>
 </head>
@@ -186,7 +221,17 @@ body{
 </div>
 
 </div>
+  
+<div class="card">
 
+  <h3>🏅 Badge Collection</h3>
+
+  <div id="badgeCollection">
+    กำลังโหลด Badge...
+  </div>
+
+</div>
+  
 <div class="card">
 
   <h3>🗺️ เส้นทางผจญภัยสุขภาพ</h3>
@@ -272,6 +317,7 @@ try{
 }
 
 loadHistory(profile.userId);
+renderBadges(data);
 const weekData = await jsonp("getCurrentWeek");
 
 let currentWeek = Number(weekData.week);
@@ -395,6 +441,65 @@ function renderJourney(currentWeek){
   `<div class="journey-summary">
     🔥 ตอนนี้คุณอยู่สัปดาห์ที่ ${currentWeek} จาก 12 สัปดาห์
   </div>`;
+
+}
+
+function renderBadges(data){
+
+  const streak = Number(data.score.streak || 0);
+  const diamonds = Number(data.score.diamonds || 0);
+  const points = Number(data.score.points || 0);
+
+  const badges = [
+
+    {
+      icon:"🌱",
+      name:"Wellness Beginner",
+      unlocked:true
+    },
+
+    {
+      icon:"🔥",
+      name:"7 Day Warrior",
+      unlocked: streak >= 7
+    },
+
+    {
+      icon:"💎",
+      name:"Diamond Collector",
+      unlocked: diamonds >= 100
+    },
+
+    {
+      icon:"🏆",
+      name:"Point Master",
+      unlocked: points >= 500
+    }
+
+  ];
+
+  let html = "";
+
+  badges.forEach(function(badge){
+
+    html += `
+      <div class="badge-item ${badge.unlocked ? "unlocked" : "locked"}">
+
+        <div class="badge-icon">
+          ${badge.icon}
+        </div>
+
+        <div class="badge-name">
+          ${badge.name}
+        </div>
+
+      </div>
+    `;
+
+  });
+
+  document.getElementById("badgeCollection").innerHTML =
+    html;
 
 }
   
