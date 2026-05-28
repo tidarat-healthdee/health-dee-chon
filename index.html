@@ -869,6 +869,9 @@ function showRescuePopup(status){
       <button onclick="buyFreezeToRescue()" style="background:#ff9800;">
         ใช้ 30 💎 ซื้อ Freeze เพื่อรักษาไฟ
       </button>
+      <button onclick="usePointsToRescue()" style="background:#43a047;">
+      ใช้ ⭐ 50 คะแนน รักษา Streak
+    </button>
     `;
   }else{
     actionButton = `
@@ -1004,6 +1007,23 @@ function showSuccessPopup(title, message){
   `;
 
   document.body.appendChild(popup);
+
+}
+
+async function usePointsToRescue(){
+
+  const result = await jsonp("usePointsToRescue", {
+    userId: currentUserId
+  });
+
+  closeRescuePopup();
+
+  showSuccessPopup(
+    result.status == "success" ? "⭐ ใช้คะแนนสำเร็จ" : "ใช้คะแนนไม่สำเร็จ",
+    result.message
+  );
+
+  await loadHomeData();
 
 }
   
