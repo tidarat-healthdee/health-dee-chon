@@ -318,6 +318,9 @@ try{
 
 loadHistory(profile.userId);
 renderBadges(data);
+setTimeout(function(){
+  checkNewBadges(data, profile.userId);
+}, 1000);
 const weekData = await jsonp("getCurrentWeek");
 
 let currentWeek = Number(weekData.week);
@@ -520,6 +523,40 @@ function showBadgePopup(badgeName, icon){
   `;
 
   document.body.appendChild(popup);
+
+}
+
+async function checkNewBadges(data, userId){
+
+  const streak = Number(data.score.streak || 0);
+  const diamonds = Number(data.score.diamonds || 0);
+  const points = Number(data.score.points || 0);
+
+  const badges = [
+    { icon:"🌱", name:"Wellness Beginner", unlocked:true },
+    { icon:"🔥", name:"7 Day Warrior", unlocked: streak >= 7 },
+    { icon:"💎", name:"Diamond Collector", unlocked: diamonds >= 100 },
+    { icon:"🏆", name:"Point Master", unlocked: points >= 500 }
+  ];
+
+  for(const badge of badges){
+
+    if(badge.unlocked){
+
+      const saveResult = await jsonp("saveBadge", {
+        userId: userId,
+        badgeName: badge.name,
+        icon: badge.icon
+      });
+
+      if(saveResult.status == "badge_saved"){
+        showBadgePopup(badge.name, badge.icon);
+        break;
+      }
+
+    }
+
+  }
 
 }
   
