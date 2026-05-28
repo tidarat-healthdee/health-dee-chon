@@ -481,6 +481,9 @@ function renderBadges(data){
   let html = "";
 
   badges.forEach(function(badge){
+  if(badge.unlocked && badge.name == "7 Day Warrior"){
+  showBadgePopup(badge.name, badge.icon);
+}
 
     html += `
       <div class="badge-item ${badge.unlocked ? "unlocked" : "locked"}">
@@ -500,6 +503,55 @@ function renderBadges(data){
 
   document.getElementById("badgeCollection").innerHTML =
     html;
+
+}
+
+function showBadgePopup(badgeName, icon){
+
+  const popup = document.createElement("div");
+
+  popup.innerHTML = `
+    <div style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+    ">
+      <div style="
+        background:white;
+        width:80%;
+        max-width:320px;
+        border-radius:24px;
+        padding:28px 20px;
+        text-align:center;
+        box-shadow:0 14px 40px rgba(0,0,0,0.22);
+      ">
+        <div style="font-size:48px;">${icon}</div>
+        <h3>ปลดล็อก Badge ใหม่!</h3>
+        <p style="font-weight:bold;">${badgeName}</p>
+
+        <button onclick="this.closest('div').parentElement.remove()"
+          style="
+            margin-top:18px;
+            width:100%;
+            border:none;
+            border-radius:14px;
+            padding:14px;
+            background:#ff9800;
+            color:white;
+            font-size:16px;
+            font-weight:bold;
+          ">
+          เยี่ยมเลย!
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
 
 }
   
