@@ -405,7 +405,7 @@ hr{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:16px;
+  gap:18px;
 }
 
 .score-left{
@@ -413,39 +413,49 @@ hr{
 }
 
 .score-label{
-  font-size:14px;
-  color:#777;
+  font-size:15px;
+  color:#666;
+  font-weight:600;
 }
 
 .score-number{
-  font-size:38px;
+  font-size:52px;
   font-weight:800;
   color:#ff9800;
   line-height:1;
-  margin-top:6px;
+  margin-top:8px;
 }
 
 .score-unit{
-  font-size:13px;
+  margin-top:6px;
+  font-size:11px;
+  letter-spacing:1px;
   color:#999;
-  margin-top:4px;
+  font-weight:700;
 }
 
 .score-right{
+  width:140px;
   display:flex;
   flex-direction:column;
-  gap:8px;
-  min-width:88px;
+  gap:10px;
 }
 
-.resource-pill{
-  background:#fff3e0;
-  border-radius:999px;
-  padding:8px 12px;
-  font-size:15px;
-  font-weight:bold;
-  text-align:center;
+.resource-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#fff8f0;
+  border-radius:16px;
+  padding:10px 12px;
+  font-size:14px;
+  color:#666;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+
+.resource-item b{
   color:#ef6c00;
+  font-size:16px;
 }
   
 </style>
@@ -480,15 +490,38 @@ hr{
   <div class="card score-card">
 
   <div class="score-left">
-    <div class="score-label">คะแนนของคุณ</div>
-    <div id="myPoints" class="score-number">0</div>
-    <div class="score-unit">คะแนน</div>
+
+    <div class="score-label">
+      คะแนนของคุณ
+    </div>
+
+    <div id="myPoints" class="score-number">
+      0
+    </div>
+
+    <div class="score-unit">
+      WELLNESS POINTS
+    </div>
+
   </div>
 
   <div class="score-right">
-    <div id="myStreak" class="resource-pill">🔥 0</div>
-    <div id="myFreeze" class="resource-pill">🧊 0</div>
-    <div id="myDiamonds" class="resource-pill">💎 0</div>
+
+    <div class="resource-item">
+      <span>🔥 Streak</span>
+      <b id="myStreak">0</b>
+    </div>
+
+    <div class="resource-item">
+      <span>🧊 Freeze</span>
+      <b id="myFreeze">0</b>
+    </div>
+
+    <div class="resource-item">
+      <span>💎 Diamonds</span>
+      <b id="myDiamonds">0</b>
+    </div>
+
   </div>
 
 </div>
@@ -649,15 +682,17 @@ async function loadHomeData(){
 
 function updateScoreDisplay(score){
 
-  document.getElementById("myPoints").innerText = score.points;
-  document.getElementById("myStreak").innerText =
-  "🔥 " + score.streak;
+  document.getElementById("myPoints").innerText =
+  score.points;
+
+document.getElementById("myStreak").innerText =
+  score.streak;
 
 document.getElementById("myFreeze").innerText =
-  "🧊 " + score.freeze;
+  score.freeze;
 
 document.getElementById("myDiamonds").innerText =
-  "💎 " + (score.diamonds || 0);
+  score.diamonds || 0;
 
   updateLevel(Number(score.points));
   updateBadges(Number(score.points), Number(score.streak));
