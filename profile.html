@@ -243,7 +243,12 @@ body{
     transform:translateY(0);
   }
 }
-
+.profile img.beginner{
+  box-shadow:
+    0 0 0 4px #66bb6a,
+    0 0 14px rgba(102,187,106,0.35);
+}
+  
 .profile img.starter{
   animation:
     avatarFloat 3s ease-in-out infinite,
@@ -693,15 +698,14 @@ function updateAvatarEvolution(points){
   let className = "avatar-evolution beginner";
 
   if(points >= 600){
-    avatar = "👑 Health Champion";
-    className = "avatar-evolution champion";
-  }else if(points >= 300){
-    avatar = "🧘 Wellness Hero";
-    className = "avatar-evolution hero";
-  }else if(points >= 100){
-    avatar = "🏃 Healthy Starter";
-    className = "avatar-evolution starter";
-  }
+  profileImg.classList.add("champion");
+}else if(points >= 300){
+  profileImg.classList.add("hero");
+}else if(points >= 100){
+  profileImg.classList.add("starter");
+}else{
+  profileImg.classList.add("beginner");
+}
 
   const el = document.getElementById("avatarEvolution");
   const profileImg = document.getElementById("profilePic");
