@@ -38,6 +38,9 @@ body{
   height:100px;
   border-radius:50%;
   object-fit:cover;
+  padding:4px;
+  background:white;
+  box-shadow:0 0 0 4px #e0e0e0;
 }
 
 .name{
@@ -205,6 +208,24 @@ body{
 
 .avatar-evolution.champion{
   background:linear-gradient(135deg,#ffca28,#ff9800);
+}
+
+.profile img.starter{
+  box-shadow:
+    0 0 0 4px #29b6f6,
+    0 0 22px rgba(41,182,246,0.55);
+}
+
+.profile img.hero{
+  box-shadow:
+    0 0 0 4px #ab47bc,
+    0 0 24px rgba(171,71,188,0.55);
+}
+
+.profile img.champion{
+  box-shadow:
+    0 0 0 4px #ffca28,
+    0 0 26px rgba(255,202,40,0.70);
 }
   
 </style>
@@ -610,9 +631,19 @@ function updateAvatarEvolution(points){
   }
 
   const el = document.getElementById("avatarEvolution");
+  const profileImg = document.getElementById("profilePic");
 
   el.innerText = avatar;
   el.className = className;
+  profileImg.className = "";
+
+if(points >= 600){
+  profileImg.classList.add("champion");
+}else if(points >= 300){
+  profileImg.classList.add("hero");
+}else if(points >= 100){
+  profileImg.classList.add("starter");
+}
 
 }
   
