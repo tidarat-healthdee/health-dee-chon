@@ -137,6 +137,16 @@ body{
   </div>
 
 </div>
+
+<div class="card" style="margin-top:20px;">
+
+  <h3>⭐ ประวัติใช้คะแนนรักษา Streak</h3>
+
+  <div id="pointRescueHistory">
+    กำลังโหลดประวัติ...
+  </div>
+
+</div>
   
 <div class="bottom-nav">
   <a href="index.html">🏠<br>ภารกิจ</a>
@@ -198,6 +208,7 @@ async function initShop(){
 document.getElementById("diamondBalance").innerText =
   "💎 เพชรของคุณ: " + (data.score.diamonds || 0);
   loadFreezeHistory();
+  loadPointRescueHistory();
 
 }
 
@@ -338,6 +349,53 @@ async function loadFreezeHistory(){
 
   document.getElementById("freezeHistory").innerHTML =
     html;
+
+}
+
+async function loadPointRescueHistory(){
+
+  const data = await jsonp("getPointRescueHistory", {
+    userId: currentUserId
+  });
+
+  let html = "";
+
+  if(data.history.length == 0){
+
+    html = `
+      <div style="color:#777;">
+        ยังไม่มีประวัติการใช้คะแนน
+      </div>
+    `;
+
+  }else{
+
+    data.history.forEach(function(item){
+
+      html += `
+        <div style="
+          background:#f7f7f7;
+          border-radius:14px;
+          padding:12px;
+          margin-bottom:10px;
+        ">
+
+          <div style="font-weight:bold;">
+            ⭐ ใช้คะแนนรักษา Streak
+          </div>
+
+          <div style="font-size:13px;color:#666;margin-top:4px;">
+            ใช้ ${item.pointsUsed} คะแนน
+          </div>
+
+        </div>
+      `;
+
+    });
+
+  }
+
+  document.getElementById("pointRescueHistory").innerHTML = html;
 
 }
   
