@@ -738,10 +738,6 @@ function updateBadges(points, streak){
   if(points >= 300) badges.push("🥗 Wellness Hero");
   if(points >= 600) badges.push("🏆 Health Champion");
   
-  if(badges.length == 0){
-    badges.push("เริ่มสะสม Badge แรกกันเลย!");
-  }
-
   document.getElementById("badgeBox").innerHTML = badges.join("<br>");
 }
 
