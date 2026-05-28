@@ -480,14 +480,14 @@ async function renderBadges(data){
 
   let html = "";
 
-  badges.forEach(function(badge){
+  for(const badge of badges){
   if(badge.unlocked){
 
   const saveResult = await jsonp("saveBadge", {
     userId: currentUserId,
     badgeName: badge.name,
     icon: badge.icon
-  });
+  }
 
   if(saveResult.status == "badge_saved"){
     showBadgePopup(badge.name, badge.icon);
