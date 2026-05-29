@@ -362,6 +362,16 @@ body{
   </div>
 
 </div>
+
+<div class="card">
+
+  <h3>📊 สถิติสุขภาพของฉัน</h3>
+
+  <div id="profileStats">
+    กำลังโหลดสถิติ...
+  </div>
+
+</div>
   
 <div class="card">
 
@@ -448,6 +458,7 @@ try{
 }
 
 loadHistory(profile.userId);
+loadProfileStats(profile.userId);
 renderBadges(data);
 setTimeout(function(){
   checkNewBadges(data, profile.userId);
@@ -535,6 +546,23 @@ async function loadHistory(userId){
 
   document.getElementById("historyList").innerHTML = html;
 
+}
+
+async function loadProfileStats(userId){
+
+  const data = await jsonp("getProfileStats", {
+    userId: userId
+  });
+
+  document.getElementById("profileStats").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>✅ ภารกิจทั้งหมด<br><b>${data.totalCompleted}</b></div>
+      <div>🏆 Weekly สำเร็จ<br><b>${data.weeklyCompleted}</b></div>
+      <div>🔥 Best Streak<br><b>${data.bestStreak}</b></div>
+      <div>🧊 ใช้ Freeze<br><b>${data.freezeUsed}</b></div>
+      <div>⭐ ใช้คะแนนรักษาไฟ<br><b>${data.pointRescueUsed}</b></div>
+    </div>
+  `;
 }
   
 main();
