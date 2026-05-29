@@ -481,6 +481,19 @@ hr{
   color:#ef6c00;
 }
   
+#myLevel{
+  font-size:18px;
+  font-weight:800;
+  color:#2d3436;
+  line-height:1.5;
+}
+
+.level-percent{
+  font-size:13px;
+  font-weight:600;
+  color:#888;
+}
+  
 </style>
 </head>
 
@@ -844,7 +857,11 @@ function updateLevel(points){
 
   const percent = Math.min((points / nextGoal) * 100, 100);
 
-  document.getElementById("myLevel").innerText = "Level: " + level;
+  document.getElementById("myLevel").innerHTML =
+  "🌱 " + level +
+  "<br><span class='level-percent'>" +
+  percent.toFixed(0) +
+  "% Complete</span>";
   document.getElementById("progressBar").style.width = percent + "%";
   document.getElementById("progressText").innerText =
     points + " / " + nextGoal + " คะแนน";
