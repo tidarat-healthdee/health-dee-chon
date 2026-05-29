@@ -558,11 +558,11 @@ console.log(data);
   
   document.getElementById("profileStats").innerHTML = `
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <div>✅ ภารกิจทั้งหมด<br><b>${data.stats.totalCompleted}</b></div>
-    <div>🏆 Weekly สำเร็จ<br><b>${data.stats.weeklyCompleted}</b></div>
-    <div>🔥 Best Streak<br><b>${data.stats.bestStreak}</b></div>
-    <div>🧊 ใช้ Freeze<br><b>${data.stats.freezeUsed}</b></div>
-    <div>⭐ ใช้คะแนนรักษาไฟ<br><b>${data.stats.pointRescueUsed}</b></div>
+    <div>✅ ภารกิจทั้งหมด<br><b>${data.totalCompleted}</b></div>
+    <div>🏆 Weekly สำเร็จ<br><b>${data.weeklyCompleted}</b></div>
+    <div>🔥 Best Streak<br><b>${data.bestStreak}</b></div>
+    <div>🧊 ใช้ Freeze<br><b>${data.freezeUsed}</b></div>
+    <div>⭐ ใช้คะแนนรักษาไฟ<br><b>${data.pointRescueUsed}</b></div>
   </div>
 `;
 }
