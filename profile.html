@@ -550,19 +550,28 @@ async function loadHistory(userId){
 
 async function loadProfileStats(userId){
 
-  const data = await jsonp("getProfileStats", {
-    userId: userId
-  });
+  try{
 
-  document.getElementById("profileStats").innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-      <div>✅ ภารกิจทั้งหมด<br><b>${data.totalCompleted || 0}</b></div>
-      <div>🏆 Weekly สำเร็จ<br><b>${data.weeklyCompleted || 0}</b></div>
-      <div>🔥 Best Streak<br><b>${data.bestStreak || 0}</b></div>
-      <div>🧊 ใช้ Freeze<br><b>${data.freezeUsed || 0}</b></div>
-      <div>⭐ ใช้คะแนนรักษาไฟ<br><b>${data.pointRescueUsed || 0}</b></div>
-    </div>
-  `;
+    const data = await jsonp("getProfileStats", {
+      userId: userId
+    });
+
+    document.getElementById("profileStats").innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>✅ ภารกิจทั้งหมด<br><b>${data.totalCompleted || 0}</b></div>
+        <div>🏆 Weekly สำเร็จ<br><b>${data.weeklyCompleted || 0}</b></div>
+        <div>🔥 Best Streak<br><b>${data.bestStreak || 0}</b></div>
+        <div>🧊 ใช้ Freeze<br><b>${data.freezeUsed || 0}</b></div>
+        <div>⭐ ใช้คะแนนรักษาไฟ<br><b>${data.pointRescueUsed || 0}</b></div>
+      </div>
+    `;
+
+  }catch(error){
+
+    document.getElementById("profileStats").innerHTML =
+      "โหลดสถิติไม่สำเร็จ กรุณารีเฟรชอีกครั้ง";
+
+  }
 
 }
   
