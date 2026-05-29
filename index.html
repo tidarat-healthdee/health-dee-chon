@@ -493,6 +493,38 @@ hr{
   font-weight:600;
   color:#888;
 }
+
+.health-tip-card{
+  margin-top:18px;
+  padding:16px;
+
+  border-radius:18px;
+
+  background:
+  linear-gradient(
+    135deg,
+    #ffffff,
+    #f8fff9
+  );
+
+  border:1px solid #e8f5e9;
+
+  box-shadow:
+  0 8px 24px rgba(0,0,0,0.05);
+}
+
+.tip-title{
+  font-size:14px;
+  font-weight:800;
+  color:#2e7d32;
+  margin-bottom:8px;
+}
+
+.tip-text{
+  font-size:14px;
+  line-height:1.6;
+  color:#555;
+}
   
 </style>
 </head>
@@ -575,6 +607,18 @@ hr{
       0 / 100 คะแนน
     </div>
 
+  <div id="healthTipCard" class="health-tip-card">
+
+  <div class="tip-title">
+    💡 Health Tip วันนี้
+  </div>
+
+  <div id="healthTipText" class="tip-text">
+    กำลังโหลด...
+  </div>
+
+</div>
+  
     </div>
 </div>
 
@@ -710,6 +754,7 @@ async function loadHomeData(){
 
   updateScoreDisplay(data.score);
   updateDynamicGreeting(data.score);
+  loadHealthTip();
 
   await loadMissions();
 
@@ -1438,6 +1483,38 @@ function updateDynamicGreeting(score){
   document.getElementById("dynamicGreeting").innerText =
     randomMessage;
 
+}
+
+function loadHealthTip(){
+
+  const tips = [
+
+    "ดื่มน้ำ 1 แก้วหลังตื่นนอน ช่วยกระตุ้นระบบเผาผลาญ",
+
+    "เดินเร็ว 10 นาทีหลังอาหาร ช่วยควบคุมระดับน้ำตาล",
+
+    "นอนก่อน 23:00 น. ช่วยให้ร่างกายฟื้นตัวดีขึ้น",
+
+    "ลุกยืดเหยียดทุก 1 ชั่วโมง ลดอาการปวดหลัง",
+
+    "รับประทานผักให้ได้ครึ่งจานในมื้อหลัก",
+
+    "การเดินเพิ่มวันละ 2,000 ก้าว ช่วยลดความเสี่ยงโรคหัวใจ",
+
+    "หายใจลึก ๆ 1 นาที ช่วยลดความเครียดระหว่างวัน",
+
+    "พักสายตาทุก 20 นาที เมื่อใช้หน้าจอต่อเนื่อง",
+
+    "เลือกบันไดแทนลิฟต์ ช่วยเพิ่มการเผาผลาญ",
+
+    "การนอน 7-9 ชั่วโมง ช่วยเสริมภูมิคุ้มกัน"
+  ];
+
+  const randomTip =
+    tips[Math.floor(Math.random()*tips.length)];
+
+  document.getElementById("healthTipText").innerText =
+    randomTip;
 }
   
 main();
