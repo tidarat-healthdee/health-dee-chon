@@ -214,22 +214,40 @@ body{
 
 .leaderboard-header{
   text-align:center;
-  margin-bottom:24px;
+  margin-bottom:22px;
 }
 
-.leaderboard-title{
-  font-size:28px;
+.champion-pill{
+  display:inline-block;
+
+  padding:12px 24px;
+
+  border-radius:999px;
+
+  background:linear-gradient(
+    135deg,
+    #e8f5e9,
+    #e3f2fd
+  );
+
+  color:#2e7d32;
+
+  font-size:26px;
   font-weight:900;
-  color:#ef6c00;
+
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
 }
 
 .leaderboard-subtitle{
-  margin-top:8px;
+  margin-top:10px;
   font-size:13px;
-  color:#777;
-  line-height:1.5;
+  color:#666;
 }
 
+.leaderboard-subtitle span{
+  color:#1e88e5;
+  font-weight:700;
+}
 .your-rank-card{
   margin-top:22px;
   padding:18px;
@@ -397,26 +415,18 @@ body{
 
 <div class="card">
 
-<div class="champion-header">
+<div class="leaderboard-header">
 
-  <div class="champion-header-inner">
+  <div class="champion-pill">
+    🏆 Hall of Champions
+  </div>
 
-    <div class="champion-icon">
-      🏆
-    </div>
+  <div class="leaderboard-subtitle">
+    แข่งขันสะสมคะแนน เพื่อก้าวสู่
+    <span>Health Champion</span>
+  </div>
 
-    <div class="champion-text">
-
-      <div class="champion-title">
-        Hall of Champions
-      </div>
-
-      <div class="champion-subtitle">
-        แข่งขันสะสมคะแนน เพื่อก้าวสู่
-        <span>Health Champion</span>
-      </div>
-
-    </div>
+</div>
 
   </div>
 
