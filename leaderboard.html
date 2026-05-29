@@ -207,6 +207,46 @@ body{
   color:#1e88e5;
   font-weight:900;
 }
+
+.leaderboard-header{
+  text-align:center;
+  margin-bottom:24px;
+}
+
+.leaderboard-title{
+  font-size:32px;
+  font-weight:900;
+  color:#ef6c00;
+}
+
+.leaderboard-subtitle{
+  margin-top:8px;
+  font-size:13px;
+  color:#777;
+  line-height:1.5;
+}
+
+.your-rank-card{
+  margin-top:22px;
+  padding:18px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#fff8e1,#ffffff);
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+  text-align:center;
+}
+
+.your-rank-label{
+  font-size:13px;
+  color:#777;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+#yourRankBox{
+  font-size:18px;
+  font-weight:900;
+  color:#ef6c00;
+}
   
 </style>
 </head>
@@ -217,8 +257,16 @@ body{
 
 <div class="card">
 
-<div class="title">
-🏆 ตารางคะแนน
+<div class="leaderboard-header">
+
+  <div class="leaderboard-title">
+    🏆 Hall of Champions
+  </div>
+
+  <div class="leaderboard-subtitle">
+    แข่งขันสะสมคะแนน เพื่อก้าวสู่ Health Champion
+  </div>
+
 </div>
 
 <div id="leaderboardList">
@@ -304,8 +352,22 @@ if(top3.length > 0){
     html += createPodiumCard(top3[2], "🥉", "third");
   }
 
-  html += `</div>`;
+  html += "</div>";
 }
+
+html += `
+  <div class="your-rank-card">
+
+    <div class="your-rank-label">
+      📍 อันดับของคุณ
+    </div>
+
+    <div id="yourRankBox">
+      #1 S.Tidarat • 124 คะแนน
+    </div>
+
+  </div>
+`;
 
 for(let i = 0; i < rest.length; i++){
 
