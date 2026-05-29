@@ -150,6 +150,65 @@ body{
   color:#1e88e5;
   margin-top:4px;
 }
+
+.podium-card{
+  position:relative;
+  background:linear-gradient(180deg,#ffffff,#fffaf3);
+  border-radius:24px;
+  padding:16px 10px;
+  text-align:center;
+  width:30%;
+  box-shadow:0 12px 30px rgba(0,0,0,0.12);
+  border:1px solid rgba(255,255,255,0.9);
+}
+
+.podium-card.first{
+  min-height:190px;
+  transform:translateY(-12px);
+  background:linear-gradient(180deg,#fff8e1,#ffffff);
+  box-shadow:0 16px 36px rgba(255,193,7,0.28);
+}
+
+.podium-card.second{
+  min-height:155px;
+}
+
+.podium-card.third{
+  min-height:140px;
+}
+
+.podium-medal{
+  font-size:30px;
+  margin-bottom:6px;
+}
+
+.podium-avatar{
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid white;
+  box-shadow:0 6px 18px rgba(0,0,0,0.18);
+}
+
+.podium-name{
+  margin-top:8px;
+  font-size:14px;
+  font-weight:800;
+}
+
+.podium-badge{
+  margin-top:4px;
+  font-size:11px;
+  color:#777;
+}
+
+.podium-points{
+  margin-top:6px;
+  font-size:13px;
+  color:#ef6c00;
+  font-weight:800;
+}
   
 </style>
 </head>
@@ -283,19 +342,24 @@ function createPodiumCard(user, medal, rankClass){
   const img = user.pictureUrl || "https://via.placeholder.com/100";
 
   return `
-  <div class="podium-card ${rankClass}">
-    <div class="medal">${medal}</div>
-    <img class="podium-avatar" src="${img}">
-    
-    <div class="podium-name">${user.name}</div>
+    <div class="podium-card ${rankClass}">
 
-    <div style="font-size:12px;margin-top:4px;">
-      ${user.badge || ""}
+      <div class="podium-medal">${medal}</div>
+
+      <img class="podium-avatar" src="${img}">
+
+      <div class="podium-name">${user.name}</div>
+
+      <div class="podium-badge">
+        ${user.badge || "🌱 Beginner"}
+      </div>
+
+      <div class="podium-points">
+        ${user.points} คะแนน
+      </div>
+
     </div>
-
-    <div class="podium-points">${user.points} คะแนน</div>
-  </div>
-`;
+  `;
 }
   
 initLeaderboard();
