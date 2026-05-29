@@ -523,6 +523,34 @@ body{
 
   margin-top:7px;
 }
+
+.app-header::before{
+  content:"";
+  position:absolute;
+  right:-36px;
+  top:-44px;
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  background:rgba(255,193,7,0.16);
+}
+
+.app-header::after{
+  content:"";
+  position:absolute;
+  left:-42px;
+  bottom:-48px;
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  background:rgba(33,150,243,0.12);
+}
+
+.header-logo-img,
+.header-content{
+  position:relative;
+  z-index:2;
+}
   
 </style>
 </head>
