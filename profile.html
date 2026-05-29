@@ -450,10 +450,9 @@ async function main(){
 
 try{
 
-  data = await jsonp("getProfilePageData", {
-    userId: profile.userId
-  });
-  console.log(data);
+  data = await jsonp("getHomeData", {
+  userId: profile.userId
+});
 
 }catch(error){
 
