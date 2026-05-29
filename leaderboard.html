@@ -247,6 +247,15 @@ body{
   font-weight:900;
   color:#ef6c00;
 }
+
+.champion-crown{
+  position:absolute;
+  top:-22px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:34px;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,0.18));
+}
   
 </style>
 </head>
@@ -403,6 +412,7 @@ function createPodiumCard(user, medal, rankClass){
 
   return `
     <div class="podium-card ${rankClass}">
+       ${rankClass == "first" ? '<div class="champion-crown">👑</div>' : ''}
 
       <div class="podium-medal">${medal}</div>
 
