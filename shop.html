@@ -79,11 +79,152 @@ body{
   font-weight:bold;
 }
 
+.app-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  position:relative;
+  overflow:hidden;
+
+  background:
+    radial-gradient(circle at 88% 18%, rgba(255,255,255,0.65) 0, rgba(255,255,255,0) 26%),
+    radial-gradient(circle at 10% 85%, rgba(129,199,132,0.20) 0, rgba(129,199,132,0) 30%),
+    linear-gradient(135deg,#f8f6e9 0%,#eef7f1 48%,#edf5ff 100%);
+
+  border-radius:24px;
+  padding:16px;
+  margin-bottom:18px;
+
+  box-shadow:0 12px 34px rgba(0,0,0,0.10);
+  border:1px solid rgba(255,255,255,0.75);
+}
+
+.app-header::before{
+  content:"";
+
+  position:absolute;
+
+  width:180px;
+  height:180px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,0.45),
+      transparent 70%
+    );
+
+  top:-60px;
+  right:-60px;
+
+  pointer-events:none;
+}
+
+.app-header::after{
+  content:"";
+
+  position:absolute;
+
+  width:140px;
+  height:140px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,0.25),
+      transparent 70%
+    );
+
+  bottom:-50px;
+  left:-40px;
+
+  pointer-events:none;
+}
+  
+.header-logo-img{
+  width:76px;
+  height:76px;
+
+  border-radius:50%;
+  object-fit:cover;
+
+  background:white;
+
+  padding:5px;
+
+  border:2px solid rgba(255,255,255,0.8);
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.14);
+
+  flex-shrink:0;
+}
+
+.header-content{
+  flex:1;
+}
+
+.header-title{
+  font-size:23px;
+  font-weight:bold;
+
+  color:#1b5e20;
+
+  line-height:1.1;
+
+  text-shadow:
+    0 2px 6px rgba(0,0,0,0.10);
+}
+
+.header-subtitle{
+  display:inline-block;
+  font-size:13px;
+  color:white;
+  background:linear-gradient(90deg,#1565c0,#43a047);
+  padding:4px 10px;
+  border-radius:999px;
+  margin-top:6px;
+  font-weight:bold;
+  position:relative;
+  z-index:2;
+}
+
+.header-tagline{
+  font-size:13px;
+
+  color:#666;
+
+  margin-top:7px;
+}
+  
 </style>
 </head>
 
 <body>
+  
+<div class="app-header">
 
+  <img src="logo.png" class="header-logo-img">
+
+  <div class="header-content">
+
+    <div class="header-title">
+      Health Dee CHON
+    </div>
+
+    <div class="header-subtitle">
+      Wellness Challenge Platform
+    </div>
+
+    <div class="header-tagline">
+      Better Health, Better You 🌱
+    </div>
+
+  </div>
+
+</div>
+  
 <div class="container">
 
 <div class="card">
