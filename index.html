@@ -553,14 +553,6 @@ hr{
 
   <br>
 
-  <div id="weeklyBoxCard" style="
-  display:none;
-  background:#fff8e1;
-    border-radius:18px;
-    padding:16px;
-    text-align:center;
-  ">
-
     <h3>🎁 Weekly Reward Box</h3>
 
     <p style="color:#666;font-size:13px;">
@@ -934,8 +926,7 @@ async function loadMissions(){
       ${weeklyHtml || "ยังไม่มีภารกิจประจำสัปดาห์"}
     </div>
   `;
-  checkWeeklyBoxUnlock();
-  
+    
 }
 
 async function submitMissionByType(missionType, week, missionTitle, points, diamonds){
@@ -1011,7 +1002,7 @@ if(already.submitted){
 });
 
         if(check.submitted){
-          showSuccess(points, diamonds, missionType);
+          await showSuccess(points, diamonds, missionType);
           document.getElementById(fileInputId).value = "";
           loadHomeData();
           loadMissions();
@@ -1041,25 +1032,49 @@ function hideLoading(){
   document.getElementById("loadingModal").style.display = "none";
 }
 
-function showSuccess(points, diamonds, missionType){
+async function showSuccess(points, diamonds, missionType){
 
   document.querySelector(".spinner").style.display = "none";
+
   document.getElementById("modalTitle").innerText =
-  "🎉 ส่งภารกิจสำเร็จ";
+    "🎉 ส่งภารกิจสำเร็จ";
 
   let streakText = "";
 
-if(missionType == "weekly"){
-  streakText =
-    "<br><br>🔥 Streak +1<br>" +
-    "คุณรักษาความต่อเนื่องได้อีก 1 วัน!";
-}
+  if(missionType == "weekly"){
+    streakText =
+      "<br><br>🔥 Streak +1<br>" +
+      "คุณรักษาความต่อเนื่องได้อีก 1 วัน!";
+  }
 
-document.getElementById("modalText").innerHTML =
-  "ได้รับ ⭐ " + points + " คะแนน<br>" +
-  "ได้รับ 💎 " + diamonds + " เพชร" +
-  streakText +
-  "<br><br><button onclick='closeSuccessModal()'>ตกลง</button>";
+  let buttonHtml = `
+    <button onclick="closeSuccessModal();">
+      ตกลง
+    </button>
+  `;
+
+  if(missionType == "weekly"){
+
+    const weekData = await jsonp("getCurrentWeek");
+    const currentWeek = Number(weekData.week || 1);
+    const rewardWeeks = [1,4,8,12];
+
+    if(rewardWeeks.includes(currentWeek)){
+      buttonHtml = `
+        <button onclick="closeSuccessModal(); showWeeklyRewardPopup();">
+          🎁 เปิดกล่องรางวัล
+        </button>
+      `;
+    }
+
+  }
+
+  document.getElementById("modalText").innerHTML =
+    "ได้รับ ⭐ " + points + " คะแนน<br>" +
+    "ได้รับ 💎 " + diamonds + " เพชร" +
+    streakText +
+    "<br><br>" +
+    buttonHtml;
 
 }
 
@@ -1263,21 +1278,6 @@ async function usePointsToRescue(){
 
 }
 
-async function checkWeeklyBoxUnlock(){
-
-  const check = await jsonp("checkTodaySubmission", {
-    userId: currentUserId,
-    missionType: "weekly"
-  });
-
-  if(check.submitted){
-    document.getElementById("weeklyBoxCard").style.display = "block";
-  }else{
-    document.getElementById("weeklyBoxCard").style.display = "none";
-  }
-
-}
-
 async function openWeeklyBox(){
 
   const result = await jsonp("openWeeklyBox", {
@@ -1315,6 +1315,75 @@ async function openWeeklyBox(){
     );
 
   }
+
+}
+
+function showWeeklyRewardPopup(){
+
+  const popup = document.createElement("div");
+
+  popup.id = "weeklyRewardPopup";
+
+  popup.innerHTML = `
+    <div style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:99999;
+    ">
+      <div style="
+        background:white;
+        width:85%;
+        max-width:340px;
+        border-radius:24px;
+        padding:24px;
+        text-align:center;
+      ">
+
+        <div style="font-size:52px;">🎁</div>
+
+        <h3>Weekly Reward Box</h3>
+
+        <p style="color:#666;line-height:1.6;">
+          คุณปลดล็อกกล่องรางวัลประจำสัปดาห์แล้ว
+        </p>
+
+        <button
+          onclick="openWeeklyBoxFromPopup()"
+          style="
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:14px;
+            background:linear-gradient(135deg,#ff9800,#ffb74d);
+            color:white;
+            font-size:16px;
+            font-weight:bold;
+          ">
+          🎁 เปิดกล่องรางวัล
+        </button>
+
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+}
+
+async function openWeeklyBoxFromPopup(){
+
+  const popup =
+    document.getElementById("weeklyRewardPopup");
+
+  if(popup){
+    popup.remove();
+  }
+
+  await openWeeklyBox();
 
 }
   
