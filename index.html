@@ -546,14 +546,43 @@ hr{
 
 <div class="card">
   <h3>ภารกิจวันนี้</h3>
-  <div id="missionList">
-  กำลังโหลดภารกิจ...
-</div>
-  <br>
-  
-</div>
 
-<hr>
+  <div id="missionList">
+    กำลังโหลดภารกิจ...
+  </div>
+
+  <br>
+
+  <div id="weeklyBoxCard" style="
+  display:none;
+  background:#fff8e1;
+    border-radius:18px;
+    padding:16px;
+    text-align:center;
+  ">
+
+    <h3>🎁 Weekly Reward Box</h3>
+
+    <p style="color:#666;font-size:13px;">
+      เปิดได้ 1 ครั้งต่อสัปดาห์
+    </p>
+
+    <button onclick="openWeeklyBox()" style="
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg,#ff9800,#ffb74d);
+      color:white;
+      font-size:16px;
+      font-weight:bold;
+    ">
+      เปิดกล่องรางวัล
+    </button>
+
+  </div>
+
+  <br>
 
 </div>
 
@@ -905,7 +934,8 @@ async function loadMissions(){
       ${weeklyHtml || "ยังไม่มีภารกิจประจำสัปดาห์"}
     </div>
   `;
-
+  checkWeeklyBoxUnlock();
+  
 }
 
 async function submitMissionByType(missionType, week, missionTitle, points, diamonds){
@@ -1230,6 +1260,61 @@ async function usePointsToRescue(){
   );
 
   await loadHomeData();
+
+}
+
+async function checkWeeklyBoxUnlock(){
+
+  const check = await jsonp("checkTodaySubmission", {
+    userId: currentUserId,
+    missionType: "weekly"
+  });
+
+  if(check.submitted){
+    document.getElementById("weeklyBoxCard").style.display = "block";
+  }else{
+    document.getElementById("weeklyBoxCard").style.display = "none";
+  }
+
+}
+
+async function openWeeklyBox(){
+
+  const result = await jsonp("openWeeklyBox", {
+    userId: currentUserId
+  });
+
+  if(result.status == "success"){
+
+    let rewardText = "";
+
+    if(result.rewardType == "points"){
+      rewardText = "⭐ +" + result.rewardValue + " คะแนน";
+    }
+
+    if(result.rewardType == "diamonds"){
+      rewardText = "💎 +" + result.rewardValue + " เพชร";
+    }
+
+    if(result.rewardType == "freeze"){
+      rewardText = "🧊 +" + result.rewardValue + " Freeze";
+    }
+
+    showSuccessPopup(
+      "🎁 เปิดกล่องรางวัลสำเร็จ",
+      "คุณได้รับ<br><b>" + rewardText + "</b>"
+    );
+
+    await loadHomeData();
+
+  }else{
+
+    showSuccessPopup(
+      "เปิดกล่องไม่ได้",
+      result.message || "กรุณาลองใหม่อีกครั้ง"
+    );
+
+  }
 
 }
   
