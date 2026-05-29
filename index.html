@@ -473,6 +473,13 @@ hr{
   position:relative;
   z-index:2;
 }
+
+.user-rank{
+  margin-top:10px;
+  font-size:14px;
+  font-weight:700;
+  color:#ef6c00;
+}
   
 </style>
 </head>
@@ -518,6 +525,9 @@ hr{
     <div class="score-unit">
       WELLNESS POINTS
     </div>
+    <div id="userRank" class="user-rank">
+  🏆 Rank #1
+</div>
 
   </div>
 
@@ -655,9 +665,9 @@ if(!reg.registered){
 
     </div>
 
-    <div class="welcome-subtitle">
-      💪 พร้อมพิชิตภารกิจสุขภาพวันนี้ไหม?
-    </div>
+    <div id="dynamicGreeting" class="motivation-bar">
+  💪 พร้อมพิชิตภารกิจสุขภาพวันนี้ไหม?
+</div>
 
   </div>
 `;
@@ -689,6 +699,7 @@ async function loadHomeData(){
   });
 
   updateScoreDisplay(data.score);
+  updateDynamicGreeting(data.score);
 
   await loadMissions();
 
@@ -1383,6 +1394,29 @@ async function openWeeklyBoxFromPopup(){
   }
 
   await openWeeklyBox();
+
+}
+function updateDynamicGreeting(score){
+
+  const messages = [
+
+    `🔥 คุณมี Streak ต่อเนื่อง ${score.streak || 0} วัน`,
+
+    `💎 คุณสะสม Diamonds แล้ว ${score.diamonds || 0} เม็ด`,
+
+    `🏆 อีก ${Math.max(0,300-(score.points||0))} คะแนน จะถึงระดับถัดไป`,
+
+    `🎯 วันนี้ยังมีภารกิจรอคุณอยู่`,
+
+    `💪 พร้อมพิชิตภารกิจสุขภาพวันนี้ไหม?`
+
+  ];
+
+  const randomMessage =
+    messages[Math.floor(Math.random()*messages.length)];
+
+  document.getElementById("dynamicGreeting").innerText =
+    randomMessage;
 
 }
   
