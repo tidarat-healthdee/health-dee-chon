@@ -102,6 +102,7 @@ body{
   gap:10px;
   margin-top:26px;
   margin-bottom:22px;
+  padding-bottom:24px;
 }
 
 .podium-card{
@@ -120,16 +121,19 @@ body{
   transform:translateY(-14px);
   background:linear-gradient(180deg,#fff8e1,#ffffff);
   border:2px solid #ffd54f;
+  position:relative;
 }
 
 .podium-card.second{
   min-height:162px;
   border:1.5px solid #cfd8dc;
+  position:relative;
 }
 
 .podium-card.third{
   min-height:148px;
   border:1.5px solid #ffcc80;
+  position:relative;
 }
 
 .podium-medal{
@@ -338,6 +342,66 @@ body{
 .champion-subtitle span{
   color:#ff9800;
   font-weight:700;
+}
+
+.podium-card.first::after{
+  content:"";
+  position:absolute;
+  left:8%;
+  bottom:-18px;
+
+  width:84%;
+  height:18px;
+
+  border-radius:0 0 18px 18px;
+
+  background:linear-gradient(
+    180deg,
+    #ffd54f,
+    #ffb300
+  );
+
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.podium-card.second::after{
+  content:"";
+  position:absolute;
+  left:8%;
+  bottom:-16px;
+
+  width:84%;
+  height:16px;
+
+  border-radius:0 0 16px 16px;
+
+  background:linear-gradient(
+    180deg,
+    #cfd8dc,
+    #90a4ae
+  );
+
+  box-shadow:0 4px 10px rgba(0,0,0,0.12);
+}
+
+.podium-card.third::after{
+  content:"";
+  position:absolute;
+  left:8%;
+  bottom:-14px;
+
+  width:84%;
+  height:14px;
+
+  border-radius:0 0 14px 14px;
+
+  background:linear-gradient(
+    180deg,
+    #d7a07a,
+    #b87333
+  );
+
+  box-shadow:0 4px 10px rgba(0,0,0,0.12);
 }
   
 </style>
