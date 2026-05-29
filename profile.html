@@ -344,6 +344,45 @@ body{
   font-size:12px;
   color:#666;
 }
+
+.rank-progress-card{
+  margin-top:14px;
+  padding:14px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#fff8e1,#e3f2fd);
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.rank-progress-top{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-size:13px;
+  font-weight:bold;
+  color:#555;
+}
+
+.rank-bar{
+  margin-top:10px;
+  height:14px;
+  background:rgba(255,255,255,0.9);
+  border-radius:999px;
+  overflow:hidden;
+}
+
+#rankBarFill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#66bb6a,#1e88e5,#ff9800);
+  transition:width 0.8s ease;
+}
+
+.rank-progress-text{
+  margin-top:8px;
+  font-size:12px;
+  color:#666;
+}
   
 </style>
 </head>
@@ -753,6 +792,57 @@ async function checkNewBadges(data, userId){
 
 }
 
+function updateRankProgress(points){
+
+  let currentRank = "🌱 Beginner";
+  let nextRank = "🏃 Healthy Starter";
+  let currentMin = 0;
+  let nextGoal = 100;
+
+  if(points >= 600){
+    currentRank = "👑 Health Champion";
+    nextRank = "MAX";
+    currentMin = 600;
+    nextGoal = 600;
+  }else if(points >= 300){
+    currentRank = "🧘 Wellness Hero";
+    nextRank = "👑 Health Champion";
+    currentMin = 300;
+    nextGoal = 600;
+  }else if(points >= 100){
+    currentRank = "🏃 Healthy Starter";
+    nextRank = "🧘 Wellness Hero";
+    currentMin = 100;
+    nextGoal = 300;
+  }
+
+  let percent = 100;
+
+  if(nextGoal > currentMin){
+    percent =
+      ((points - currentMin) /
+      (nextGoal - currentMin)) * 100;
+  }
+
+  percent = Math.max(0, Math.min(percent, 100));
+
+  document.getElementById("currentRankText").innerText =
+    currentRank;
+
+  document.getElementById("nextRankText").innerText =
+    nextRank;
+
+  document.getElementById("rankBarFill").style.width =
+    percent + "%";
+
+  document.getElementById("rankProgressText").innerText =
+    points >= 600
+      ? "🎉 คุณอยู่ระดับสูงสุดแล้ว"
+      : "อีก " + (nextGoal - points) +
+        " คะแนน จะเลื่อนเป็น " + nextRank;
+
+}
+  
 function updateAvatarEvolution(points){
 
   let avatar = "🌱 Beginner";
