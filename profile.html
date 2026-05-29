@@ -385,6 +385,63 @@ body{
   text-align:center;
   font-weight:600;
 }
+
+.profile-score-card{
+  margin-top:18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:18px;
+  border-radius:26px;
+  background:linear-gradient(135deg,#fff8e1,#e3f2fd);
+  box-shadow:0 10px 28px rgba(0,0,0,0.10);
+}
+
+.profile-score-left{
+  flex:1;
+  text-align:left;
+}
+
+.profile-score-label{
+  font-size:13px;
+  color:#666;
+  font-weight:700;
+}
+
+.profile-score-number{
+  margin-top:6px;
+  font-size:48px;
+  line-height:1;
+  font-weight:900;
+  color:#ff9800;
+}
+
+.profile-score-sub{
+  margin-top:6px;
+  font-size:10px;
+  letter-spacing:1px;
+  color:#999;
+  font-weight:700;
+}
+
+.profile-score-right{
+  width:145px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.profile-resource{
+  background:white;
+  border-radius:16px;
+  padding:9px 10px;
+  font-size:13px;
+  font-weight:700;
+  color:#555;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  text-align:left;
+}
   
 </style>
 </head>
@@ -426,20 +483,20 @@ body{
 0
 </div>
 
-<div>
-คะแนนสะสม
-</div>
+<div class="profile-score-card">
 
-<div class="info" id="myStreak">
-🔥 0 Day Streak
-</div>
+  <div class="profile-score-left">
+    <div class="profile-score-label">คะแนนสะสม</div>
+    <div class="profile-score-number" id="myPoints">0</div>
+    <div class="profile-score-sub">WELLNESS POINTS</div>
+  </div>
 
-<div class="info" id="myFreeze">
-🧊 0 Freeze
-</div>
+  <div class="profile-score-right">
+    <div class="profile-resource" id="myStreak">🔥 0 Day Streak</div>
+    <div class="profile-resource" id="myFreeze">🧊 0 Freeze</div>
+    <div class="profile-resource" id="myDiamonds">💎 0 Diamonds</div>
+  </div>
 
-<div class="info" id="myDiamonds">
-💎 0 Diamonds
 </div>
 
 </div>
