@@ -575,10 +575,7 @@ hr{
       0 / 100 คะแนน
     </div>
 
-    <div id="badgeBox" style="margin-top:12px;font-size:15px;">
-      กำลังโหลด Badge...
     </div>
-  </div>
 </div>
 
 <hr>
@@ -875,7 +872,13 @@ function updateBadges(points, streak){
   if(points >= 300) badges.push("🥗 Wellness Hero");
   if(points >= 600) badges.push("🏆 Health Champion");
   
-  document.getElementById("badgeBox").innerHTML = badges.join("<br>");
+  const badgeBox =
+  document.getElementById("badgeBox");
+
+if(badgeBox){
+  badgeBox.innerHTML =
+    badges.join("<br>");
+}
 }
 
 async function loadMissions(){
