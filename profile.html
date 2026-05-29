@@ -449,12 +449,17 @@ async function main(){
   let data;
 
 try{
-  data = await jsonp("getHomeData", {
+
+  data = await jsonp("getProfilePageData", {
     userId: profile.userId
   });
+  console.log(data);
+
 }catch(error){
+
   alert("โหลดโปรไฟล์ไม่ได้: " + error.message);
   return;
+
 }
 
 loadHistory(profile.userId);
