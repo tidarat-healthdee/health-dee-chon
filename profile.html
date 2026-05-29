@@ -553,18 +553,17 @@ async function loadProfileStats(userId){
   const data = await jsonp("getProfileStats", {
     userId: userId
   });
-  
-console.log(data);
-  
+
   document.getElementById("profileStats").innerHTML = `
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <div>✅ ภารกิจทั้งหมด<br><b>${data.totalCompleted}</b></div>
-    <div>🏆 Weekly สำเร็จ<br><b>${data.weeklyCompleted}</b></div>
-    <div>🔥 Best Streak<br><b>${data.bestStreak}</b></div>
-    <div>🧊 ใช้ Freeze<br><b>${data.freezeUsed}</b></div>
-    <div>⭐ ใช้คะแนนรักษาไฟ<br><b>${data.pointRescueUsed}</b></div>
-  </div>
-`;
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>✅ ภารกิจทั้งหมด<br><b>${data.totalCompleted || 0}</b></div>
+      <div>🏆 Weekly สำเร็จ<br><b>${data.weeklyCompleted || 0}</b></div>
+      <div>🔥 Best Streak<br><b>${data.bestStreak || 0}</b></div>
+      <div>🧊 ใช้ Freeze<br><b>${data.freezeUsed || 0}</b></div>
+      <div>⭐ ใช้คะแนนรักษาไฟ<br><b>${data.pointRescueUsed || 0}</b></div>
+    </div>
+  `;
+
 }
   
 main();
