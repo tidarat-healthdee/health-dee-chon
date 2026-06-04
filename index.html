@@ -754,6 +754,7 @@ async function loadHomeData(){
 
   updateScoreDisplay(data.score);
   updateDynamicGreeting(data.score);
+  loadUserRank();
   loadHealthTip();
 
   await loadMissions();
@@ -1515,6 +1516,17 @@ function loadHealthTip(){
 
   document.getElementById("healthTipText").innerText =
     randomTip;
+}
+
+async function loadUserRank(){
+
+  const data = await jsonp("getUserRank", {
+    userId: currentUserId
+  });
+
+  document.getElementById("userRank").innerText =
+    "🏆 Rank #" + data.rank + " / " + data.totalUsers;
+
 }
   
 main();
