@@ -643,6 +643,29 @@ function jsonp(action, params = {}){
 
 }
 
+async function loadMyRank(userId){
+
+  const data = await jsonp("getUserRank", {
+    userId:userId
+  });
+
+  const box =
+    document.getElementById("yourRankBox");
+
+  if(box){
+
+    box.innerHTML =
+      "#" + data.rank + " " + data.name +
+      "<br><span style='font-size:14px;color:#777;'>"+
+      data.points +
+      " คะแนน จากผู้เข้าร่วม " +
+      data.totalUsers +
+      " คน</span>";
+
+  }
+
+}
+  
 async function initLeaderboard(){
 
   await liff.init({ liffId: LIFF_ID });
@@ -721,6 +744,7 @@ for(let i = 0; i < rest.length; i++){
   }
 
   document.getElementById("leaderboardList").innerHTML = html;
+  await loadMyRank(profile.userId);
 
 }
 
@@ -748,6 +772,20 @@ function createPodiumCard(user, medal, rankClass){
 
     </div>
   `;
+}
+
+async function loadMyRank(){
+
+  const data = await jsonp("getUserRank", {
+    userId: currentUserId
+  });
+
+  document.getElementById("yourRankBox").innerHTML =
+    "#" + data.rank + " " + data.name +
+    "<br><span style='font-size:14px;color:#777;'>" +
+    data.points + " คะแนน จากผู้เข้าร่วม " +
+    data.totalUsers + " คน</span>";
+
 }
   
 initLeaderboard();
