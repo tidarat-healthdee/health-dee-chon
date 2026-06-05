@@ -12,6 +12,7 @@ body{
   font-family:Arial,sans-serif;
   background:#fff8f0;
   color:#333;
+  padding-bottom:110px;
 }
 
 .container{
@@ -68,29 +69,53 @@ body{
 
   .bottom-nav{
   position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  max-width:480px;
-  margin:auto;
-  background:white;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+
+  width:calc(100% - 32px);
+  max-width:520px;
+
   display:flex;
   justify-content:space-around;
-  padding:10px 0;
-  box-shadow:0 -4px 16px rgba(0,0,0,0.08);
-  border-radius:20px 20px 0 0;
+  align-items:center;
+
+  padding:10px 8px;
+
+  background:rgba(255,255,255,0.86);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+
+  border-radius:28px;
+
+  box-shadow:
+    0 14px 34px rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.85);
+
+  border:1px solid rgba(255,255,255,0.75);
+
+  z-index:999;
 }
 
 .bottom-nav a{
-  text-decoration:none;
-  color:#777;
-  font-size:13px;
+  flex:1;
   text-align:center;
+  text-decoration:none;
+
+  color:#8a8a8a;
+  font-size:12px;
+  font-weight:700;
+
+  padding:8px 4px;
+  border-radius:18px;
+
+  transition:all 0.25s ease;
 }
 
 .bottom-nav a.active{
-  color:#ff9800;
-  font-weight:bold;
+  color:#ef8f00;
+  background:linear-gradient(135deg,#fff8e1,#fff3e0);
+  box-shadow:0 6px 16px rgba(255,152,0,0.18);
 }
 
 #journeyMap{
