@@ -774,10 +774,10 @@ function createPodiumCard(user, medal, rankClass){
   `;
 }
 
-async function loadMyRank(){
+async function loadMyRank(userId){
 
   const data = await jsonp("getUserRank", {
-    userId: currentUserId
+    userId: userId
   });
 
   document.getElementById("yourRankBox").innerHTML =
