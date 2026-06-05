@@ -69,12 +69,12 @@ body{
   padding:10px 8px;
 
   background:
-    linear-gradient(
-      135deg,
-      rgba(232,245,233,0.94),
-      rgba(227,242,253,0.94),
-      rgba(255,248,225,0.94)
-    );
+linear-gradient(
+135deg,
+rgba(255,255,255,0.72),
+rgba(248,252,255,0.78),
+rgba(255,252,247,0.72)
+);
 
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
@@ -107,21 +107,23 @@ body{
 }
 
 .bottom-nav a.active{
-  color:white;
+
+  color:#1e88e5;
 
   background:
-    linear-gradient(
-      135deg,
-      #4caf50,
-      #2196f3
-    );
+    rgba(255,255,255,0.55);
+
+  backdrop-filter:blur(10px);
+
+  border:1px solid
+    rgba(255,255,255,0.7);
 
   box-shadow:
-    0 8px 20px rgba(33,150,243,0.25);
+    0 6px 14px rgba(0,0,0,0.06);
 
-  transform:scale(1.05);
+  transform:scale(1.03);
 }
-
+  
 .app-header{
   display:flex;
   align-items:center;
@@ -267,6 +269,22 @@ body{
 .header-content{
   position:relative;
   z-index:2;
+}
+
+.bottom-nav a:nth-child(1){
+  color:#4caf50;
+}
+
+.bottom-nav a:nth-child(2){
+  color:#ff9800;
+}
+
+.bottom-nav a:nth-child(3){
+  color:#2196f3;
+}
+
+.bottom-nav a:nth-child(4){
+  color:#7e57c2;
 }
   
 </style>
