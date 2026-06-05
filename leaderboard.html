@@ -69,7 +69,7 @@ body{
   text-align:center;
   text-decoration:none;
 
-  color:#8a8a8a;
+  color:#777;
   font-size:12px;
   font-weight:700;
 
@@ -77,12 +77,27 @@ body{
   border-radius:18px;
 
   transition:all 0.25s ease;
+  transform:scale(1);
 }
 
 .bottom-nav a.active{
-  color:#ef8f00;
-  background:linear-gradient(135deg,#fff8e1,#fff3e0);
-  box-shadow:0 6px 16px rgba(255,152,0,0.18);
+
+  color:#ef6c00;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(255,243,224,0.95),
+    rgba(255,248,225,0.95)
+  );
+
+  border:1px solid
+    rgba(255,152,0,0.20);
+
+  box-shadow:
+    0 8px 18px rgba(255,152,0,0.15);
+
+  transform:scale(1.03);
 }
 
 .rank-card{
@@ -575,6 +590,22 @@ body{
 .header-content{
   position:relative;
   z-index:2;
+}
+
+.bottom-nav a:nth-child(1){
+  color:#4caf50;
+}
+
+.bottom-nav a:nth-child(2){
+  color:#ff9800;
+}
+
+.bottom-nav a:nth-child(3){
+  color:#2196f3;
+}
+
+.bottom-nav a:nth-child(4){
+  color:#7e57c2;
 }
   
 </style>
