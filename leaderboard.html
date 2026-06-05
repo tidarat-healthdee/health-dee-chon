@@ -781,10 +781,11 @@ async function loadMyRank(){
   });
 
   document.getElementById("yourRankBox").innerHTML =
-    "#" + data.rank + " " + data.name +
-    "<br><span style='font-size:14px;color:#777;'>" +
-    data.points + " คะแนน จากผู้เข้าร่วม " +
-    data.totalUsers + " คน</span>";
+  "<div style='font-size:28px;color:#ef6c00;font-weight:900;'>#" + data.rank + "</div>" +
+  "<div style='margin-top:4px;font-size:18px;font-weight:800;'>" + data.name + "</div>" +
+  "<div style='margin-top:4px;font-size:14px;color:#777;'>" +
+  data.points + " คะแนน จากผู้เข้าร่วม " +
+  data.totalUsers + " คน</div>";
 
 }
   
