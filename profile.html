@@ -657,6 +657,40 @@ body{
   font-weight:800;
   box-shadow:0 6px 16px rgba(0,0,0,0.08);
 }
+
+.profile-score-right{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.summary-mini-card{
+  background:white;
+  border-radius:16px;
+  padding:10px 14px;
+
+  box-shadow:
+    0 6px 16px rgba(0,0,0,0.05);
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.summary-mini-icon{
+  font-size:18px;
+}
+
+.summary-mini-value{
+  font-size:20px;
+  font-weight:900;
+  color:#ef6c00;
+}
+
+.summary-mini-label{
+  font-size:12px;
+  color:#777;
+}
   
 </style>
 </head>
@@ -729,10 +763,26 @@ body{
   </div>
 
   <div class="profile-score-right">
-    <div class="profile-resource" id="myStreak">🔥 0 Day Streak</div>
-    <div class="profile-resource" id="myFreeze">🧊 0 Freeze</div>
-    <div class="profile-resource" id="myDiamonds">💎 0 Diamonds</div>
+
+  <div class="summary-mini-card">
+    <div class="summary-mini-icon">🔥</div>
+    <div class="summary-mini-value" id="myStreak">0</div>
+    <div class="summary-mini-label">Streak</div>
   </div>
+
+  <div class="summary-mini-card">
+    <div class="summary-mini-icon">🧊</div>
+    <div class="summary-mini-value" id="myFreeze">0</div>
+    <div class="summary-mini-label">Freeze</div>
+  </div>
+
+  <div class="summary-mini-card">
+    <div class="summary-mini-icon">💎</div>
+    <div class="summary-mini-value" id="myDiamonds">0</div>
+    <div class="summary-mini-label">Diamonds</div>
+  </div>
+
+</div>
 
 </div>
 
