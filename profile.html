@@ -863,9 +863,23 @@ async function main(){
 
 try{
 
-  data = await jsonp("getHomeData", {
+  const cacheKey = "profileData_" + profile.userId;
+
+const cachedData = localStorage.getItem(cacheKey);
+
+if(cachedData){
+  data = JSON.parse(cachedData);
+  renderProfileData(data, profile);
+}
+
+data = await jsonp("getHomeData", {
   userId: profile.userId
 });
+
+localStorage.setItem(
+  cacheKey,
+  JSON.stringify(data)
+);
 
 }catch(error){
 
@@ -875,7 +889,7 @@ try{
 }
 
 // loadHistory(profile.userId);
-loadProfileRank(profile.userId);
+// loadProfileRank(profile.userId);
 renderBadges(data);
 // setTimeout(function(){
 //   checkNewBadges(data, profile.userId);
