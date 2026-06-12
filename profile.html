@@ -869,7 +869,7 @@ const cachedData = localStorage.getItem(cacheKey);
 
 if(cachedData){
   data = JSON.parse(cachedData);
-  renderProfileData(data, profile);
+  // renderProfileData(data, profile);
 }
 
 data = await jsonp("getHomeData", {
