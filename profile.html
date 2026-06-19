@@ -868,8 +868,29 @@ try{
 const cachedData = localStorage.getItem(cacheKey);
 
 if(cachedData){
+
   data = JSON.parse(cachedData);
-  // renderProfileData(data, profile);
+
+  document.getElementById("myPoints").innerText =
+    data.score.points || 0;
+
+  document.getElementById("myStreak").innerText =
+    "🔥 " + (data.score.streak || 0) + " Day Streak";
+
+  document.getElementById("myFreeze").innerText =
+    "🧊 " + (data.score.freeze || 0) + " Freeze";
+
+  document.getElementById("myDiamonds").innerText =
+    "💎 " + (data.score.diamonds || 0) + " Diamonds";
+
+  updateAvatarEvolution(Number(data.score.points || 0));
+  updateRankProgress(Number(data.score.points || 0));
+  renderBadges(data);
+
+  let cachedWeek = Number(data.currentWeek || 1);
+  if(cachedWeek < 1) cachedWeek = 1;
+  if(cachedWeek > 12) cachedWeek = 12;
+  renderJourney(cachedWeek);
 }
 
 data = await jsonp("getProfileFastData", {
