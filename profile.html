@@ -863,9 +863,9 @@ async function main(){
 
 try{
 
-const cacheKey = "profileData_" + profile.userId;
+const cacheKey = "profileData_v2_" + profile.userId;
 
-const cachedData = null;
+const cachedData = localStorage.getItem(cacheKey);
 
 if(cachedData){
 
