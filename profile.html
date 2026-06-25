@@ -902,6 +902,13 @@ localStorage.setItem(
   JSON.stringify(data)
 );
 
+const rankBox = document.getElementById("profileRank");
+
+if(rankBox && data.rank){
+  rankBox.innerText =
+    "🏆 Rank #" + data.rank.rank + " / " + data.rank.totalUsers;
+}
+  
 }catch(error){
 
   alert("โหลดโปรไฟล์ไม่ได้: " + error.message);
@@ -909,8 +916,8 @@ localStorage.setItem(
 
 }
 
-loadHistory(profile.userId);
-loadProfileRank(profile.userId);
+// loadHistory(profile.userId);
+// loadProfileRank(profile.userId);
 renderBadges(data);
 // setTimeout(function(){
 //   checkNewBadges(data, profile.userId);
@@ -1011,6 +1018,49 @@ async function loadProfileRank(userId){
     rankBox.innerText =
       "🏆 Rank #" + data.rank + " / " + data.totalUsers;
   }
+
+}
+
+function renderHistoryFromData(history){
+
+  let html = "";
+
+  if(!history || history.length == 0){
+
+    html = `
+      <div style="color:#777;">
+        ยังไม่มีประวัติภารกิจ
+      </div>
+    `;
+
+  }else{
+
+    history.forEach(function(item){
+
+      html += `
+        <div style="
+          background:#f7f7f7;
+          border-radius:14px;
+          padding:12px;
+          margin-bottom:10px;
+        ">
+
+          <div style="font-weight:bold;">
+            ${item.missionType || "ภารกิจ"}
+          </div>
+
+          <div style="font-size:13px;color:#666;margin-top:4px;">
+            ${item.status || ""}
+          </div>
+
+        </div>
+      `;
+
+    });
+
+  }
+
+  document.getElementById("historyList").innerHTML = html;
 
 }
   
