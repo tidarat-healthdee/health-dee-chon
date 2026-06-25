@@ -902,6 +902,8 @@ localStorage.setItem(
   JSON.stringify(data)
 );
 
+renderProfileFullData(data);  
+
 const rankBox = document.getElementById("profileRank");
 
 if(rankBox && data.rank){
@@ -922,7 +924,7 @@ renderBadges(data);
 // setTimeout(function(){
 //   checkNewBadges(data, profile.userId);
 // }, 1000);
-const weekData = await jsonp("getCurrentWeek");
+// const weekData = await jsonp("getCurrentWeek");
 
 let currentWeek = Number(weekData.week);
 
@@ -1023,45 +1025,57 @@ async function loadProfileRank(userId){
 
 function renderHistoryFromData(history){
 
-  let html = "";
+  const box = document.getElementById("historyList");
 
   if(!history || history.length == 0){
-
-    html = `
-      <div style="color:#777;">
-        ยังไม่มีประวัติภารกิจ
-      </div>
-    `;
-
-  }else{
-
-    history.forEach(function(item){
-
-      html += `
-        <div style="
-          background:#f7f7f7;
-          border-radius:14px;
-          padding:12px;
-          margin-bottom:10px;
-        ">
-
-          <div style="font-weight:bold;">
-            ${item.missionType || "ภารกิจ"}
-          </div>
-
-          <div style="font-size:13px;color:#666;margin-top:4px;">
-            ${item.status || ""}
-          </div>
-
-        </div>
-      `;
-
-    });
-
+    box.innerHTML = "ยังไม่มีประวัติภารกิจ";
+    return;
   }
 
-  document.getElementById("historyList").innerHTML = html;
+  let html = "";
 
+  history.forEach(function(item){
+    html += `
+      <div style="background:#f7f7f7;border-radius:14px;padding:12px;margin-bottom:10px;">
+        <b>${item.missionType || "ภารกิจ"}</b><br>
+        <span style="font-size:13px;color:#666;">${item.status || ""}</span>
+      </div>
+    `;
+  });
+
+  box.innerHTML = html;
+}
+
+function renderProfileFullData(data){
+
+  document.getElementById("myPoints").innerText =
+    data.score.points || 0;
+
+  document.getElementById("myStreak").innerText =
+    "🔥 " + (data.score.streak || 0) + " Day Streak";
+
+  document.getElementById("myFreeze").innerText =
+    "🧊 " + (data.score.freeze || 0) + " Freeze";
+
+  document.getElementById("myDiamonds").innerText =
+    "💎 " + (data.score.diamonds || 0) + " Diamonds";
+
+  updateAvatarEvolution(Number(data.score.points || 0));
+  updateRankProgress(Number(data.score.points || 0));
+  renderBadges(data);
+
+  const rankBox = document.getElementById("profileRank");
+  if(rankBox && data.rank){
+    rankBox.innerText =
+      "🏆 Rank #" + data.rank.rank + " / " + data.rank.totalUsers;
+  }
+
+  let currentWeek = Number(data.currentWeek || 1);
+  if(currentWeek < 1) currentWeek = 1;
+  if(currentWeek > 12) currentWeek = 12;
+  renderJourney(currentWeek);
+
+  renderHistoryFromData(data.history);
 }
   
 main();
