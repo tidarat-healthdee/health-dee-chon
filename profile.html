@@ -809,14 +809,11 @@ body{
 </div>
   
 <script>
-
 const LIFF_ID = "2010154691-Lfwg705W";
 const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMNUMLckaTkoqnt4Ze1t026aj_WyeYZw1-PV8BWx-u8LrQHqA/exec";
 
 async function jsonp(action, params = {}){
-
-  return new Promise(function(resolve){
-
+  return new Promise(function(resolve, reject){
     const callbackName = "callback_" + Date.now();
 
     window[callbackName] = function(data){
@@ -833,11 +830,12 @@ async function jsonp(action, params = {}){
 
     const script = document.createElement("script");
     script.src = url;
+    script.onerror = function(){
+      reject(new Error("โหลดข้อมูลไม่สำเร็จ"));
+    };
 
     document.body.appendChild(script);
-
   });
-
 }
 
 async function main(){
@@ -853,174 +851,70 @@ async function main(){
 
   const profile = await liff.getProfile();
 
-  document.getElementById("profilePic").src =
-    profile.pictureUrl;
+  document.getElementById("profilePic").src = profile.pictureUrl;
+  document.getElementById("displayName").innerText = profile.displayName;
 
-  document.getElementById("displayName").innerText =
-    profile.displayName;
+  const cacheKey = "profileData_clean_" + profile.userId;
+  const cachedData = localStorage.getItem(cacheKey);
 
-  let data;
+  if(cachedData){
+    renderProfileFullData(JSON.parse(cachedData));
+  }
 
-try{
+  try{
 
-const cacheKey = "profileData_v2_" + profile.userId;
+    const data = await jsonp("getProfileFullData", {
+      userId: profile.userId
+    });
 
-const cachedData = localStorage.getItem(cacheKey);
+    localStorage.setItem(
+      cacheKey,
+      JSON.stringify(data)
+    );
 
-if(cachedData){
+    renderProfileFullData(data);
 
-  data = JSON.parse(cachedData);
+  }catch(error){
+
+    if(!cachedData){
+      alert("โหลดโปรไฟล์ไม่ได้: " + error.message);
+    }
+
+  }
+}
+
+function renderProfileFullData(data){
+
+  const score = data.score || {};
 
   document.getElementById("myPoints").innerText =
-    data.score.points || 0;
+    score.points || 0;
 
   document.getElementById("myStreak").innerText =
-    "🔥 " + (data.score.streak || 0) + " Day Streak";
+    "🔥 " + (score.streak || 0) + " Day Streak";
 
   document.getElementById("myFreeze").innerText =
-    "🧊 " + (data.score.freeze || 0) + " Freeze";
+    "🧊 " + (score.freeze || 0) + " Freeze";
 
   document.getElementById("myDiamonds").innerText =
-    "💎 " + (data.score.diamonds || 0) + " Diamonds";
+    "💎 " + (score.diamonds || 0) + " Diamonds";
 
-  updateAvatarEvolution(Number(data.score.points || 0));
-  updateRankProgress(Number(data.score.points || 0));
+  updateAvatarEvolution(Number(score.points || 0));
+  updateRankProgress(Number(score.points || 0));
   renderBadges(data);
-
-// let cachedWeek = Number(data.currentWeek || 1);
-// if(cachedWeek < 1) cachedWeek = 1;
-// if(cachedWeek > 12) cachedWeek = 12;
-// renderJourney(cachedWeek);
+  renderRank(data.rank);
+  renderJourney(Number(data.currentWeek || 1));
+  renderHistoryFromData(data.history);
 }
 
-data = await jsonp("getProfileFullData", {
-  userId: profile.userId
-});
-
-localStorage.setItem(
-  cacheKey,
-  JSON.stringify(data)
-);
-
-renderProfileFullData(data);  
-
-const rankBox = document.getElementById("profileRank");
-
-if(rankBox && data.rank){
-  rankBox.innerText =
-    "🏆 Rank #" + data.rank.rank + " / " + data.rank.totalUsers;
-}
-  
-}catch(error){
-
-  alert("โหลดโปรไฟล์ไม่ได้: " + error.message);
-  return;
-
-}
-
-// loadHistory(profile.userId);
-// loadProfileRank(profile.userId);
-renderBadges(data);
-// setTimeout(function(){
-//   checkNewBadges(data, profile.userId);
-// }, 1000);
-// const weekData = await jsonp("getCurrentWeek");
-
-let currentWeek = Number(weekData.week);
-
-if(!currentWeek || currentWeek < 1){
-  currentWeek = 1;
-}
-
-if(currentWeek > 12){
-  currentWeek = 12;
-}
-
-renderJourney(currentWeek);
-  
-  document.getElementById("myPoints").innerText =
-    data.score.points;
-  updateAvatarEvolution(Number(data.score.points || 0));
-  updateRankProgress(Number(data.score.points || 0));
-
-  document.getElementById("myStreak").innerText =
-    "🔥 " + data.score.streak + " Day Streak";
-
-  document.getElementById("myFreeze").innerText =
-    "🧊 " + data.score.freeze + " Freeze";
-
-  document.getElementById("myDiamonds").innerText =
-  "💎 " + (data.score.diamonds || 0) + " Diamonds";
-
-  let badge = "🌱 Beginner";
-
-if(data.score.points >= 600){
-  badge = "👑 Health Champion";
-}else if(data.score.points >= 300){
-  badge = "💪 Wellness Hero";
-}else if(data.score.points >= 100){
-  badge = "🔥 Healthy Starter";
-}
-
-}
-
-function getDriveImageUrl(url){
-  const match = url.match(/\/d\/(.*?)\//);
-  if(match && match[1]){
-    return "https://drive.google.com/thumbnail?id=" + match[1];
-  }
-  return url;
-}
-  
-async function loadHistory(userId){
-
-  const data = await jsonp("getUserSubmissions", {
-    userId: userId
-  });
-
-  let html = "";
-
-  if(data.submissions.length == 0){
-    html = "ยังไม่มีประวัติการส่งภารกิจ";
-  }
-
-  data.submissions.forEach(function(item){
-
-    html += `
-  <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee;align-items:center;">
-    
-    <img src="${getDriveImageUrl(item.imageUrl)}" 
-      style="width:64px;height:64px;border-radius:14px;object-fit:cover;background:#eee;">
-
-    <div>
-      <b>${item.mission}</b><br>
-      <span style="font-size:13px;color:#777;">
-        ${item.missionType} | ⭐ ${item.points} | 💎 ${item.diamonds}
-      </span>
-    </div>
-
-  </div>
-`;
-
-  });
-
-  document.getElementById("historyList").innerHTML = html;
-
-}
-
-async function loadProfileRank(userId){
-
-  const data = await jsonp("getUserRank", {
-    userId: userId
-  });
+function renderRank(rank){
 
   const rankBox = document.getElementById("profileRank");
 
-  if(rankBox){
+  if(rankBox && rank){
     rankBox.innerText =
-      "🏆 Rank #" + data.rank + " / " + data.totalUsers;
+      "🏆 Rank #" + rank.rank + " / " + rank.totalUsers;
   }
-
 }
 
 function renderHistoryFromData(history){
@@ -1035,10 +929,30 @@ function renderHistoryFromData(history){
   let html = "";
 
   history.forEach(function(item){
+
+    const typeText =
+      item.missionType == "weekly"
+        ? "ภารกิจประจำสัปดาห์"
+        : "ภารกิจพื้นฐาน";
+
+    const icon =
+      item.missionType == "weekly" ? "🏆" : "🌱";
+
     html += `
-      <div style="background:#f7f7f7;border-radius:14px;padding:12px;margin-bottom:10px;">
-        <b>${item.missionType || "ภารกิจ"}</b><br>
-        <span style="font-size:13px;color:#666;">${item.status || ""}</span>
+      <div style="
+        background:linear-gradient(135deg,#ffffff,#fff8e1);
+        border-radius:18px;
+        padding:14px;
+        margin-bottom:12px;
+        box-shadow:0 6px 16px rgba(0,0,0,0.06);
+      ">
+        <div style="font-weight:800;font-size:15px;color:#333;">
+          ${icon} ${typeText}
+        </div>
+
+        <div style="font-size:13px;color:#777;margin-top:6px;">
+          ได้รับ ${item.status || "-"} คะแนน
+        </div>
       </div>
     `;
   });
@@ -1046,41 +960,10 @@ function renderHistoryFromData(history){
   box.innerHTML = html;
 }
 
-function renderProfileFullData(data){
+function renderJourney(currentWeek){
 
-  document.getElementById("myPoints").innerText =
-    data.score.points || 0;
-
-  document.getElementById("myStreak").innerText =
-    "🔥 " + (data.score.streak || 0) + " Day Streak";
-
-  document.getElementById("myFreeze").innerText =
-    "🧊 " + (data.score.freeze || 0) + " Freeze";
-
-  document.getElementById("myDiamonds").innerText =
-    "💎 " + (data.score.diamonds || 0) + " Diamonds";
-
-  updateAvatarEvolution(Number(data.score.points || 0));
-  updateRankProgress(Number(data.score.points || 0));
-  renderBadges(data);
-
-  const rankBox = document.getElementById("profileRank");
-  if(rankBox && data.rank){
-    rankBox.innerText =
-      "🏆 Rank #" + data.rank.rank + " / " + data.rank.totalUsers;
-  }
-
-  let currentWeek = Number(data.currentWeek || 1);
   if(currentWeek < 1) currentWeek = 1;
   if(currentWeek > 12) currentWeek = 12;
-  renderJourney(currentWeek);
-
-  renderHistoryFromData(data.history);
-}
-  
-main();
-
-function renderJourney(currentWeek){
 
   let html = "";
 
@@ -1101,30 +984,25 @@ function renderJourney(currentWeek){
 
     html += `
       <div class="journey-node ${status}">
-        <div class="journey-week">
-          Week ${i}
-        </div>
-
-        <div class="journey-icon">
-          ${icon}
-        </div>
+        <div class="journey-week">Week ${i}</div>
+        <div class="journey-icon">${icon}</div>
       </div>
     `;
   }
 
   document.getElementById("journeyMap").innerHTML =
-  html +
-  `<div class="journey-summary">
-    🔥 ตอนนี้คุณอยู่สัปดาห์ที่ ${currentWeek} จาก 12 สัปดาห์
-  </div>`;
-
+    html +
+    `<div class="journey-summary">
+      🔥 ตอนนี้คุณอยู่สัปดาห์ที่ ${currentWeek} จาก 12 สัปดาห์
+    </div>`;
 }
 
 function renderBadges(data){
 
-  const streak = Number(data.score.streak || 0);
-  const diamonds = Number(data.score.diamonds || 0);
-  const points = Number(data.score.points || 0);
+  const score = data.score || {};
+  const streak = Number(score.streak || 0);
+  const diamonds = Number(score.diamonds || 0);
+  const points = Number(score.points || 0);
 
   const badges = [
     { icon:"🌱", name:"Wellness Beginner", unlocked:true },
@@ -1136,188 +1014,15 @@ function renderBadges(data){
   let html = "";
 
   badges.forEach(function(badge){
-
     html += `
       <div class="badge-item ${badge.unlocked ? "unlocked" : "locked"}">
         <div class="badge-icon">${badge.icon}</div>
         <div class="badge-name">${badge.name}</div>
       </div>
     `;
-
   });
 
   document.getElementById("badgeCollection").innerHTML = html;
-
-}
-
-function showBadgePopup(badgeName, icon){
-
-  const popup = document.createElement("div");
-
-  popup.innerHTML = `
-    <div style="
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.45);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:9999;
-    ">
-      <div style="
-        background:white;
-        width:80%;
-        max-width:320px;
-        border-radius:24px;
-        padding:28px 20px;
-        text-align:center;
-        box-shadow:0 14px 40px rgba(0,0,0,0.22);
-      ">
-        <div style="font-size:48px;">${icon}</div>
-        <h3>ปลดล็อก Badge ใหม่!</h3>
-        <p style="font-weight:bold;">${badgeName}</p>
-
-        <button onclick="this.closest('div').parentElement.remove()"
-          style="
-            margin-top:18px;
-            width:100%;
-            border:none;
-            border-radius:14px;
-            padding:14px;
-            background:#ff9800;
-            color:white;
-            font-size:16px;
-            font-weight:bold;
-          ">
-          เยี่ยมเลย!
-        </button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(popup);
-
-}
-
-async function checkNewBadges(data, userId){
-
-  const streak = Number(data.score.streak || 0);
-  const diamonds = Number(data.score.diamonds || 0);
-  const points = Number(data.score.points || 0);
-
-  const badges = [
-    { icon:"🌱", name:"Wellness Beginner", unlocked:true },
-    { icon:"🔥", name:"7 Day Warrior", unlocked: streak >= 7 },
-    { icon:"💎", name:"Diamond Collector", unlocked: diamonds >= 100 },
-    { icon:"🏆", name:"Point Master", unlocked: points >= 500 }
-  ];
-
-  for(const badge of badges){
-
-    if(badge.unlocked){
-
-      const saveResult = await jsonp("saveBadge", {
-        userId: userId,
-        badgeName: badge.name,
-        icon: badge.icon
-      });
-
-      if(saveResult.status == "badge_saved"){
-        showBadgePopup(badge.name, badge.icon);
-        break;
-      }
-
-    }
-
-  }
-
-}
-
-function updateRankProgress(points){
-
-  let currentRank = "🌱 Beginner";
-  let nextRank = "🏃 Healthy Starter";
-  let currentMin = 0;
-  let nextGoal = 100;
-
-  if(points >= 600){
-    currentRank = "👑 Health Champion";
-    nextRank = "MAX";
-    currentMin = 600;
-    nextGoal = 600;
-  }else if(points >= 300){
-    currentRank = "🧘 Wellness Hero";
-    nextRank = "👑 Health Champion";
-    currentMin = 300;
-    nextGoal = 600;
-  }else if(points >= 100){
-    currentRank = "🏃 Healthy Starter";
-    nextRank = "🧘 Wellness Hero";
-    currentMin = 100;
-    nextGoal = 300;
-  }
-
-  let percent = 100;
-
-  if(nextGoal > currentMin){
-    percent =
-      ((points - currentMin) /
-      (nextGoal - currentMin)) * 100;
-  }
-
-  percent = Math.max(0, Math.min(percent, 100));
-
-  document.getElementById("currentRankText").innerText =
-    currentRank;
-
-  document.getElementById("nextRankText").innerText =
-    nextRank;
-
-  document.getElementById("rankBarFill").style.width =
-    percent + "%";
-
-  document.getElementById("rankProgressText").innerText =
-    points >= 600
-      ? "🎉 คุณอยู่ระดับสูงสุดแล้ว"
-      : "อีก " + (nextGoal - points) +
-        " คะแนน จะเลื่อนเป็น " + nextRank;
-
-}
-  
-function updateAvatarEvolution(points){
-
-  let avatar = "🌱 Beginner";
-  let className = "avatar-evolution beginner";
-
-  if(points >= 600){
-    avatar = "👑 Health Champion";
-    className = "avatar-evolution champion";
-  }else if(points >= 300){
-    avatar = "🧘 Wellness Hero";
-    className = "avatar-evolution hero";
-  }else if(points >= 100){
-    avatar = "🏃 Healthy Starter";
-    className = "avatar-evolution starter";
-  }
-
-  const el = document.getElementById("avatarEvolution");
-  const profileImg = document.getElementById("profilePic");
-
-  el.innerText = avatar;
-  el.className = className;
-
-  profileImg.className = "";
-
-  if(points >= 600){
-    profileImg.classList.add("champion");
-  }else if(points >= 300){
-    profileImg.classList.add("hero");
-  }else if(points >= 100){
-    profileImg.classList.add("starter");
-  }else{
-    profileImg.classList.add("beginner");
-  }
-
 }
 
 function updateRankProgress(points){
@@ -1358,12 +1063,48 @@ function updateRankProgress(points){
 
   document.getElementById("rankProgressText").innerText =
     points >= 600
-    ? "คุณอยู่ระดับสูงสุดแล้ว 🎉"
-    : "อีก " + (nextGoal - points) + " คะแนน จะถึง " + nextRank;
-
+      ? "คุณอยู่ระดับสูงสุดแล้ว 🎉"
+      : "อีก " + (nextGoal - points) + " คะแนน จะถึง " + nextRank;
 }
-  
+
+function updateAvatarEvolution(points){
+
+  let avatar = "🌱 Beginner";
+  let className = "avatar-evolution beginner";
+
+  if(points >= 600){
+    avatar = "👑 Health Champion";
+    className = "avatar-evolution champion";
+  }else if(points >= 300){
+    avatar = "🧘 Wellness Hero";
+    className = "avatar-evolution hero";
+  }else if(points >= 100){
+    avatar = "🏃 Healthy Starter";
+    className = "avatar-evolution starter";
+  }
+
+  const el = document.getElementById("avatarEvolution");
+  const profileImg = document.getElementById("profilePic");
+
+  el.innerText = avatar;
+  el.className = className;
+
+  profileImg.className = "";
+
+  if(points >= 600){
+    profileImg.classList.add("champion");
+  }else if(points >= 300){
+    profileImg.classList.add("hero");
+  }else if(points >= 100){
+    profileImg.classList.add("starter");
+  }else{
+    profileImg.classList.add("beginner");
+  }
+}
+
+main();
 </script>
+  
 <div class="bottom-nav">
   <a href="index.html">🏠<br>ภารกิจ</a>
   <a href="leaderboard.html">🏆<br>อันดับ</a>
