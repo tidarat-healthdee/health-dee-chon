@@ -887,10 +887,10 @@ if(cachedData){
   updateRankProgress(Number(data.score.points || 0));
   renderBadges(data);
 
-  let cachedWeek = Number(data.currentWeek || 1);
-  if(cachedWeek < 1) cachedWeek = 1;
-  if(cachedWeek > 12) cachedWeek = 12;
-  renderJourney(cachedWeek);
+// let cachedWeek = Number(data.currentWeek || 1);
+// if(cachedWeek < 1) cachedWeek = 1;
+// if(cachedWeek > 12) cachedWeek = 12;
+// renderJourney(cachedWeek);
 }
 
 data = await jsonp("getProfileFastData", {
