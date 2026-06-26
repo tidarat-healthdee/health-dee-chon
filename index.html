@@ -803,9 +803,9 @@ if(!reg.registered){
 
 async function loadHomeData(){
 
-  const data = await jsonp("getHomeData", {
-    userId: currentUserId
-  });
+ const data = await jsonp("getHomeFastData", {
+  userId: currentUserId
+});
 
   updateScoreDisplay(data.score);
   updateDynamicGreeting(data.score);
