@@ -698,11 +698,10 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbz1W5e1oCIS--Azg49vevMN
 
 let currentUserId = "";
 let currentDisplayName = "";
+let latestHomeData = null;
 
 function jsonp(action, params = {}){
-
-  return new Promise(function(resolve){
-
+  return new Promise(function(resolve, reject){
     const callbackName = "callback_" + Date.now();
 
     window[callbackName] = function(data){
@@ -719,8 +718,11 @@ function jsonp(action, params = {}){
 
     const script = document.createElement("script");
     script.src = url;
-    document.body.appendChild(script);
+    script.onerror = function(){
+      reject(new Error("โหลดข้อมูลไม่สำเร็จ"));
+    };
 
+    document.body.appendChild(script);
   });
 }
 
@@ -741,200 +743,107 @@ async function main(){
 
     currentUserId = profile.userId;
     currentDisplayName = profile.displayName;
+
     const reg = await jsonp("isRegistered", {
-  userId: currentUserId
-});
-
-if(!reg.registered){
-  alert("กรุณาลงทะเบียนก่อนเข้าร่วมกิจกรรม");
-  window.location.href = "register.html";
-  return;
-}
-
-    status.innerHTML = `
-  <div class="welcome-card">
-
-    <div class="welcome-top">
-
-      <div class="welcome-icon">
-        🌟
-      </div>
-
-      <div>
-
-        <div class="welcome-title">
-          Welcome Back!
-        </div>
-
-        <div class="welcome-name">
-          สวัสดีคุณ ${profile.displayName}
-        </div>
-
-      </div>
-
-    </div>
-
-    <div id="dynamicGreeting" class="welcome-subtitle">
-  💪 พร้อมพิชิตภารกิจสุขภาพวันนี้ไหม?
-</div>
-
-  </div>
-`;
-
-    fetch(GAS_URL, {
-      method:"POST",
-      mode:"no-cors",
-      headers:{"Content-Type":"text/plain"},
-      body:JSON.stringify({
-        action:"registerUser",
-        userId:profile.userId,
-        displayName:profile.displayName,
-        pictureUrl:profile.pictureUrl,
-        companyCode:"ABC"
-      })
+      userId: currentUserId
     });
 
-    setTimeout(loadHomeData, 1200);
+    if(!reg.registered){
+      alert("กรุณาลงทะเบียนก่อนเข้าร่วมกิจกรรม");
+      window.location.href = "register.html";
+      return;
+    }
+
+    renderWelcome(profile);
+    await loadHomeData();
+
+    setTimeout(function(){
+      checkStreakRescue();
+    }, 800);
 
   }catch(error){
     status.innerText = "ERROR: " + error.message;
   }
 }
 
+function renderWelcome(profile){
+
+  document.getElementById("status").innerHTML = `
+    <div class="welcome-card">
+
+      <div class="welcome-top">
+
+        <div class="welcome-icon">
+          🌟
+        </div>
+
+        <div>
+          <div class="welcome-title">
+            Welcome Back!
+          </div>
+
+          <div class="welcome-name">
+            สวัสดีคุณ ${profile.displayName}
+          </div>
+        </div>
+
+      </div>
+
+      <div id="dynamicGreeting" class="welcome-subtitle">
+        💪 พร้อมพิชิตภารกิจสุขภาพวันนี้ไหม?
+      </div>
+
+    </div>
+  `;
+}
+
 async function loadHomeData(){
 
- const data = await jsonp("getHomeFastData", {
-  userId: currentUserId
-});
+  const cacheKey = "homeData_v2_" + currentUserId;
+  const cachedData = localStorage.getItem(cacheKey);
 
-  updateScoreDisplay(data.score);
-  updateDynamicGreeting(data.score);
-  loadUserRank();
+  if(cachedData){
+    latestHomeData = JSON.parse(cachedData);
+    renderHomeData(latestHomeData);
+  }
+
+  const data = await jsonp("getHomePageData", {
+    userId: currentUserId
+  });
+
+  latestHomeData = data;
+
+  localStorage.setItem(
+    cacheKey,
+    JSON.stringify(data)
+  );
+
+  renderHomeData(data);
+}
+
+function renderHomeData(data){
+
+  updateScoreDisplay(data.score || {});
+  updateDynamicGreeting(data.score || {});
   loadHealthTip();
-
-  await loadMissions();
-
-  checkStreakRescue();
-
+  renderMissions(data.missions || []);
 }
 
 function updateScoreDisplay(score){
 
   document.getElementById("myPoints").innerText =
-  score.points;
+    score.points || 0;
 
-document.getElementById("myStreak").innerText =
-  score.streak;
+  document.getElementById("myStreak").innerText =
+    score.streak || 0;
 
-document.getElementById("myFreeze").innerText =
-  score.freeze;
+  document.getElementById("myFreeze").innerText =
+    score.freeze || 0;
 
-document.getElementById("myDiamonds").innerText =
-  score.diamonds || 0;
+  document.getElementById("myDiamonds").innerText =
+    score.diamonds || 0;
 
-  updateLevel(Number(score.points));
-  updateBadges(Number(score.points), Number(score.streak));
-
-}
-
-function updateLeaderboard(list){
-
-  let html = "";
-
-  for(let i=0; i<list.length; i++){
-    html += "#" + (i+1) + " " + list[i].name + " - " + list[i].points + " คะแนน<br>";
-  }
-
-  document.getElementById("leaderboardBox").innerHTML = html;
-}
-
-function updateDashboard(data){
-
-  document.getElementById("adminDashboard").innerHTML =
-    "จำนวนผู้เข้าร่วม: " + data.totalUsers + " คน<br>" +
-    "จำนวนการส่งภารกิจ: " + data.totalSubmissions + " ครั้ง<br>" +
-    "คะแนนรวมทั้งหมด: " + data.totalPoints + " คะแนน";
-}
-
-async function submitMission(){
-
-  const file = document.getElementById("imageUpload").files[0];
-
-  if(!file){
-    alert("กรุณาเลือกรูป");
-    return;
-  }
-
-  const already = await jsonp("checkTodaySubmission", {
-    userId: currentUserId
-  });
-
-  if(already.submitted){
-    alert("วันนี้คุณส่งภารกิจแล้ว");
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.onload = function(event){
-
-    const img = new Image();
-
-    img.onload = async function(){
-
-      const canvas = document.createElement("canvas");
-      const maxWidth = 800;
-      const scale = maxWidth / img.width;
-
-      canvas.width = maxWidth;
-      canvas.height = img.height * scale;
-
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      const resizedBase64 = canvas.toDataURL("image/jpeg", 0.7).split(",")[1];
-
-      showLoading(
-  "กำลังส่งข้อมูล...",
-  "ระบบกำลังบันทึกภารกิจของคุณ"
-);
-      
-      await fetch(GAS_URL, {
-        method:"POST",
-        mode:"no-cors",
-        headers:{"Content-Type":"text/plain"},
-        body:JSON.stringify({
-          action:"submitMission",
-          userId:currentUserId,
-          displayName:currentDisplayName,
-          mission:document.getElementById("missionBox").innerText,
-          fileName:"mission.jpg",
-          base64Data:resizedBase64
-        })
-      });
-
-      setTimeout(async function(){
-
-        const check = await jsonp("checkTodaySubmission", {
-  userId: currentUserId,
-  missionType: missionType
-});
-
-        if(check.submitted){
-          alert("🎉 ส่งภารกิจสำเร็จแล้ว");
-          document.getElementById("imageUpload").value = "";
-          loadHomeData();
-        }else{
-          alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่");
-        }
-
-      }, 2500);
-    };
-
-    img.src = event.target.result;
-  };
-
-  reader.readAsDataURL(file);
+  updateLevel(Number(score.points || 0));
 }
 
 function updateLevel(points){
@@ -956,123 +865,160 @@ function updateLevel(points){
   const percent = Math.min((points / nextGoal) * 100, 100);
 
   document.getElementById("myLevel").innerHTML =
-  "🌱 " + level +
-  "<br><span class='level-percent'>" +
-  percent.toFixed(0) +
-  "% Complete</span>";
-  document.getElementById("progressBar").style.width = percent + "%";
+    "🌱 " + level +
+    "<br><span class='level-percent'>" +
+    percent.toFixed(0) +
+    "% Complete</span>";
+
+  document.getElementById("progressBar").style.width =
+    percent + "%";
+
   document.getElementById("progressText").innerText =
     points + " / " + nextGoal + " คะแนน";
 }
 
-function updateBadges(points, streak){
+function updateDynamicGreeting(score){
 
-  let badges = [];
+  const messages = [
+    `🔥 คุณมี Streak ต่อเนื่อง ${score.streak || 0} วัน`,
+    `🎯 วันนี้ยังมีภารกิจรอคุณอยู่`,
+    `💪 พร้อมพิชิตภารกิจสุขภาพวันนี้ไหม?`,
+    `🌱 เริ่มวันนี้ให้ดีกว่าเมื่อวาน`,
+    `🏃 ทำทีละนิด แต่ทำต่อเนื่อง`
+  ];
 
-  if(points >= 100) badges.push("🌱 Healthy Starter");
-  if(points >= 300) badges.push("🥗 Wellness Hero");
-  if(points >= 600) badges.push("🏆 Health Champion");
-  
-  const badgeBox =
-  document.getElementById("badgeBox");
+  const randomMessage =
+    messages[Math.floor(Math.random()*messages.length)];
 
-if(badgeBox){
-  badgeBox.innerHTML =
-    badges.join("<br>");
+  const box = document.getElementById("dynamicGreeting");
+
+  if(box){
+    box.innerText = randomMessage;
+  }
 }
+
+function loadHealthTip(){
+
+  const tips = [
+    "ดื่มน้ำ 1 แก้วหลังตื่นนอน ช่วยกระตุ้นระบบเผาผลาญ",
+    "เดินเร็ว 10 นาทีหลังอาหาร ช่วยควบคุมระดับน้ำตาล",
+    "นอนก่อน 23:00 น. ช่วยให้ร่างกายฟื้นตัวดีขึ้น",
+    "ลุกยืดเหยียดทุก 1 ชั่วโมง ลดอาการปวดหลัง",
+    "รับประทานผักให้ได้ครึ่งจานในมื้อหลัก",
+    "การเดินเพิ่มวันละ 2,000 ก้าว ช่วยลดความเสี่ยงโรคหัวใจ",
+    "หายใจลึก ๆ 1 นาที ช่วยลดความเครียดระหว่างวัน",
+    "พักสายตาทุก 20 นาที เมื่อใช้หน้าจอต่อเนื่อง",
+    "เลือกบันไดแทนลิฟต์ ช่วยเพิ่มการเผาผลาญ",
+    "การนอน 7-9 ชั่วโมง ช่วยเสริมภูมิคุ้มกัน"
+  ];
+
+  const randomTip =
+    tips[Math.floor(Math.random()*tips.length)];
+
+  const box = document.getElementById("healthTipText");
+
+  if(box){
+    box.innerText = randomTip;
+  }
 }
 
-async function loadMissions(){
-
-  const data = await jsonp("getMissions");
+function renderMissions(missions){
 
   let basicHtml = "";
   let weeklyHtml = "";
 
-  for(const mission of data.missions){
+  missions.forEach(function(mission){
 
-  const check = await jsonp("checkTodaySubmission", {
-    userId: currentUserId,
-    missionType: mission.type
+    let actionHtml = "";
+
+    if(mission.submitted){
+      actionHtml = `
+        <div class="submitted-badge">
+          ส่งแล้ววันนี้
+        </div>
+      `;
+    }else{
+      actionHtml = `
+        <input
+          type="file"
+          id="image_${mission.type}_${mission.week}"
+          accept="image/*"
+          style="margin-top:12px;"
+        >
+
+        <button onclick="submitMissionByType(
+          '${mission.type}',
+          '${mission.week}',
+          '${mission.title}',
+          Number('${mission.points}'),
+          Number('${mission.diamonds}')
+        )">
+          ส่งภารกิจนี้
+        </button>
+      `;
+    }
+
+    const missionCard = `
+      <div class="mission-card">
+        <b>${mission.title}</b><br>
+
+        <div style="margin-top:6px;">
+          ${mission.points} คะแนน | ${mission.diamonds} เพชร
+        </div>
+
+        ${actionHtml}
+      </div>
+    `;
+
+    if(mission.type == "basic"){
+      basicHtml += missionCard;
+    }
+
+    if(mission.type == "weekly"){
+      weeklyHtml += missionCard;
+    }
+
   });
-
-  let actionHtml = "";
-
-  if(check.submitted){
-    actionHtml = `
-      <div class="submitted-badge">
-        ✅ ส่งแล้ววันนี้
-      </div>
-    `;
-  }else{
-    actionHtml = `
-      <input type="file" id="image_${mission.type}_${mission.week}" accept="image/*" style="margin-top:12px;">
-
-      <button onclick="submitMissionByType('${mission.type}', '${mission.week}', '${mission.title}', Number('${mission.points}'), Number('${mission.diamonds}'))">
-        ส่งภารกิจนี้
-      </button>
-    `;
-  }
-
-  const missionCard = `
-    <div class="mission-card">
-      <b>${mission.title}</b><br>
-      <div style="margin-top:6px;">
-        ⭐ ${mission.points} คะแนน | 💎 ${mission.diamonds} เพชร
-      </div>
-      ${actionHtml}
-    </div>
-  `;
-
-  if(mission.type == "basic"){
-    basicHtml += missionCard;
-  }
-
-  if(mission.type == "weekly"){
-    weeklyHtml += missionCard;
-  }
-
-}
 
   document.getElementById("missionList").innerHTML = `
     <div class="mission-section basic-section">
-      <h3>🌱 ภารกิจพื้นฐาน</h3>
+      <h3>ภารกิจพื้นฐาน</h3>
+
       <p>
         ภารกิจเสริมสำหรับสะสมคะแนนและเพชร สามารถทำได้เมื่อพร้อม
         ไม่จำเป็นต้องทำทุกวัน
       </p>
+
       ${basicHtml || "ยังไม่มีภารกิจพื้นฐาน"}
     </div>
 
     <div class="mission-section weekly-section">
-      <h3>🔥 ภารกิจประจำสัปดาห์</h3>
+      <h3>ภารกิจประจำสัปดาห์</h3>
+
       <p>
-        ภารกิจหลักของสัปดาห์นี้ ควรทำทุกวันเพื่อสะสม Streak
+        ภารกิจหลักของสัปดาห์นี้ควรทำทุกวันเพื่อสะสม Streak
         และรักษาความต่อเนื่อง
       </p>
+
       ${weeklyHtml || "ยังไม่มีภารกิจประจำสัปดาห์"}
     </div>
   `;
-    
 }
 
 async function submitMissionByType(missionType, week, missionTitle, points, diamonds){
-const already = await jsonp("checkTodaySubmission", {
-  userId: currentUserId,
-  missionType: missionType
-});
 
-if(already.submitted){
-  alert("วันนี้คุณส่งภารกิจประเภทนี้แล้ว");
-  return;
-}
-  const fileInputId = "image_" + missionType + "_" + week;
-  const file = document.getElementById(fileInputId).files[0];
+  const fileInputId =
+    "image_" + missionType + "_" + week;
 
-  if(!file){
+  const fileInput =
+    document.getElementById(fileInputId);
+
+  if(!fileInput || !fileInput.files[0]){
     alert("กรุณาเลือกรูปก่อนส่งภารกิจ");
     return;
   }
+
+  const file = fileInput.files[0];
 
   const reader = new FileReader();
 
@@ -1092,64 +1038,69 @@ if(already.submitted){
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      const resizedBase64 = canvas
-        .toDataURL("image/jpeg", 0.7)
-        .split(",")[1];
+      const resizedBase64 =
+        canvas.toDataURL("image/jpeg", 0.7).split(",")[1];
 
       showLoading(
-  "กำลังส่งข้อมูล...",
-  "ระบบกำลังบันทึกภารกิจของคุณ"
-);
+        "กำลังส่งข้อมูล...",
+        "ระบบกำลังบันทึกภารกิจของคุณ"
+      );
 
       await fetch(GAS_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain"
+        method:"POST",
+        mode:"no-cors",
+        headers:{
+          "Content-Type":"text/plain"
         },
-        body: JSON.stringify({
-          action: "submitMission",
-          userId: currentUserId,
-          displayName: currentDisplayName,
-          mission: missionTitle,
-          missionType: missionType,
-          week: week,
-          points: points,
-          diamonds: diamonds,
-          fileName: "mission.jpg",
-          base64Data: resizedBase64
+        body:JSON.stringify({
+          action:"submitMission",
+          userId:currentUserId,
+          displayName:currentDisplayName,
+          mission:missionTitle,
+          missionType:missionType,
+          week:week,
+          points:points,
+          diamonds:diamonds,
+          fileName:"mission.jpg",
+          base64Data:resizedBase64
         })
       });
 
       setTimeout(async function(){
 
         const check = await jsonp("checkTodaySubmission", {
-  userId: currentUserId,
-  missionType: missionType
-});
+          userId: currentUserId,
+          missionType: missionType
+        });
 
         if(check.submitted){
+
           await showSuccess(points, diamonds, missionType);
-          document.getElementById(fileInputId).value = "";
-          loadHomeData();
-          loadMissions();
+
+          fileInput.value = "";
+
+          localStorage.removeItem("homeData_v2_" + currentUserId);
+
+          await loadHomeData();
+
         }else{
+
           hideLoading();
-alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่");
+          alert("ยังไม่พบข้อมูลการส่ง กรุณาลองใหม่");
+
         }
 
       }, 2500);
-
     };
 
     img.src = event.target.result;
-
   };
 
   reader.readAsDataURL(file);
-
 }
+
 function showLoading(title, text){
+
   document.getElementById("modalTitle").innerText = title;
   document.getElementById("modalText").innerText = text;
   document.getElementById("loadingModal").style.display = "flex";
@@ -1182,23 +1133,22 @@ async function showSuccess(points, diamonds, missionType){
 
   if(missionType == "weekly"){
 
-  const weekData = await jsonp("getCurrentWeek");
+    const weekData = await jsonp("getCurrentWeek");
 
-  const currentWeek = Number(
-    weekData.week || weekData || 1
-  );
+    const currentWeek = Number(
+      weekData.week || weekData || 1
+    );
 
-  const rewardWeeks = [1,4,8,12];
+    const rewardWeeks = [1,4,8,12];
 
-  if(rewardWeeks.includes(currentWeek)){
-    buttonHtml = `
-      <button onclick="closeSuccessModal(); showWeeklyRewardPopup();">
-        🎁 เปิดกล่องรางวัล
-      </button>
-    `;
+    if(rewardWeeks.includes(currentWeek)){
+      buttonHtml = `
+        <button onclick="closeSuccessModal(); showWeeklyRewardPopup();">
+          🎁 เปิดกล่องรางวัล
+        </button>
+      `;
+    }
   }
-
-}
 
   document.getElementById("modalText").innerHTML =
     "ได้รับ ⭐ " + points + " คะแนน<br>" +
@@ -1206,18 +1156,12 @@ async function showSuccess(points, diamonds, missionType){
     streakText +
     "<br><br>" +
     buttonHtml;
-
 }
 
 function closeSuccessModal(){
 
   document.querySelector(".spinner").style.display = "block";
-
   hideLoading();
-
-  loadHomeData();
-  loadMissions();
-
 }
 
 async function checkStreakRescue(){
@@ -1231,12 +1175,12 @@ async function checkStreakRescue(){
   }
 
   showRescuePopup(status);
-
 }
 
 function showRescuePopup(status){
 
   const popup = document.createElement("div");
+  popup.id = "rescuePopup";
 
   let actionButton = "";
 
@@ -1251,19 +1195,18 @@ function showRescuePopup(status){
       <button onclick="buyFreezeToRescue()" style="background:#ff9800;">
         ใช้ 30 💎 ซื้อ Freeze เพื่อรักษาไฟ
       </button>
+
       <button onclick="usePointsToRescue()" style="background:#43a047;">
-      ใช้ ⭐ 50 คะแนน รักษา Streak
-    </button>
+        ใช้ ⭐ 50 คะแนน รักษา Streak
+      </button>
     `;
   }else{
     actionButton = `
-      <button onclick="closeRescuePopup()" style="background:#999;">
-        รับทราบ
+      <button onclick="usePointsToRescue()" style="background:#43a047;">
+        ใช้ ⭐ 50 คะแนน รักษา Streak
       </button>
     `;
   }
-
-  popup.id = "rescuePopup";
 
   popup.innerHTML = `
     <div style="
@@ -1284,6 +1227,7 @@ function showRescuePopup(status){
         text-align:center;
         box-shadow:0 14px 40px rgba(0,0,0,0.22);
       ">
+
         <div style="font-size:42px;">🔥</div>
 
         <h3>Streak ของคุณใกล้ขาด</h3>
@@ -1300,96 +1244,55 @@ function showRescuePopup(status){
             ไว้ก่อน
           </button>
         </div>
+
       </div>
     </div>
   `;
 
   document.body.appendChild(popup);
-
 }
 
 function closeRescuePopup(){
+
   const popup = document.getElementById("rescuePopup");
+
   if(popup){
     popup.remove();
   }
 }
+
 async function useFreezeToRescue(){
 
   const result = await jsonp("useFreezeToRescue", {
     userId: currentUserId
   });
 
-  if(result.status == "success"){
+  closeRescuePopup();
 
-    closeRescuePopup();
+  showSuccessPopup(
+    result.status == "success" ? "🧊 ใช้ Freeze สำเร็จ" : "ใช้ Freeze ไม่สำเร็จ",
+    result.message || "Streak ของคุณได้รับการป้องกันแล้ว"
+  );
 
-    showSuccessPopup(
-  "🧊 ใช้ Streak Freeze สำเร็จ",
-  "Streak ของคุณได้รับการป้องกันแล้ว"
-);
-
-    await loadHomeData();
-
-  }else{
-
-    alert("ไม่สามารถใช้ Freeze ได้ กรุณาลองใหม่");
-
-  }
-
+  localStorage.removeItem("homeData_v2_" + currentUserId);
+  await loadHomeData();
 }
 
-function showSuccessPopup(title, message){
+async function buyFreezeToRescue(){
 
-  const popup = document.createElement("div");
+  const result = await jsonp("buyFreezeToRescue", {
+    userId: currentUserId
+  });
 
-  popup.innerHTML = `
-    <div style="
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.45);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:99999;
-    ">
-      <div style="
-        background:white;
-        width:80%;
-        max-width:320px;
-        border-radius:24px;
-        padding:24px;
-        text-align:center;
-        box-shadow:0 14px 40px rgba(0,0,0,0.22);
-      ">
-        <div style="font-size:42px;">🧊</div>
+  closeRescuePopup();
 
-        <h3>${title}</h3>
+  showSuccessPopup(
+    result.status == "success" ? "💎 ซื้อ Freeze สำเร็จ" : "ซื้อ Freeze ไม่สำเร็จ",
+    result.message || "ระบบดำเนินการเรียบร้อยแล้ว"
+  );
 
-        <p style="color:#666;line-height:1.6;">
-          ${message}
-        </p>
-
-        <button onclick="this.closest('div').parentElement.remove()"
-          style="
-            margin-top:18px;
-            width:100%;
-            border:none;
-            border-radius:14px;
-            padding:14px;
-            background:#1e88e5;
-            color:white;
-            font-size:16px;
-            font-weight:bold;
-          ">
-          เยี่ยมเลย!
-        </button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(popup);
-
+  localStorage.removeItem("homeData_v2_" + currentUserId);
+  await loadHomeData();
 }
 
 async function usePointsToRescue(){
@@ -1405,8 +1308,8 @@ async function usePointsToRescue(){
     result.message
   );
 
+  localStorage.removeItem("homeData_v2_" + currentUserId);
   await loadHomeData();
-
 }
 
 async function openWeeklyBox(){
@@ -1436,6 +1339,7 @@ async function openWeeklyBox(){
       "คุณได้รับ<br><b>" + rewardText + "</b>"
     );
 
+    localStorage.removeItem("homeData_v2_" + currentUserId);
     await loadHomeData();
 
   }else{
@@ -1446,13 +1350,11 @@ async function openWeeklyBox(){
     );
 
   }
-
 }
 
 function showWeeklyRewardPopup(){
 
   const popup = document.createElement("div");
-
   popup.id = "weeklyRewardPopup";
 
   popup.innerHTML = `
@@ -1502,7 +1404,6 @@ function showWeeklyRewardPopup(){
   `;
 
   document.body.appendChild(popup);
-
 }
 
 async function openWeeklyBoxFromPopup(){
@@ -1515,75 +1416,62 @@ async function openWeeklyBoxFromPopup(){
   }
 
   await openWeeklyBox();
-
-}
-function updateDynamicGreeting(score){
-
-  const messages = [
-
-    `🔥 คุณมี Streak ต่อเนื่อง ${score.streak || 0} วัน`,
-
-    `💎 คุณสะสม Diamonds แล้ว ${score.diamonds || 0} เม็ด`,
-
-    `🏆 อีก ${Math.max(0,300-(score.points||0))} คะแนน จะถึงระดับถัดไป`,
-
-    `🎯 วันนี้ยังมีภารกิจรอคุณอยู่`,
-
-    `💪 พร้อมพิชิตภารกิจสุขภาพวันนี้ไหม?`
-
-  ];
-
-  const randomMessage =
-    messages[Math.floor(Math.random()*messages.length)];
-
-  document.getElementById("dynamicGreeting").innerText =
-    randomMessage;
-
 }
 
-function loadHealthTip(){
+function showSuccessPopup(title, message){
 
-  const tips = [
+  const popup = document.createElement("div");
 
-    "ดื่มน้ำ 1 แก้วหลังตื่นนอน ช่วยกระตุ้นระบบเผาผลาญ",
+  popup.innerHTML = `
+    <div style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:99999;
+    ">
+      <div style="
+        background:white;
+        width:80%;
+        max-width:320px;
+        border-radius:24px;
+        padding:24px;
+        text-align:center;
+        box-shadow:0 14px 40px rgba(0,0,0,0.22);
+      ">
 
-    "เดินเร็ว 10 นาทีหลังอาหาร ช่วยควบคุมระดับน้ำตาล",
+        <div style="font-size:42px;">✨</div>
 
-    "นอนก่อน 23:00 น. ช่วยให้ร่างกายฟื้นตัวดีขึ้น",
+        <h3>${title}</h3>
 
-    "ลุกยืดเหยียดทุก 1 ชั่วโมง ลดอาการปวดหลัง",
+        <p style="color:#666;line-height:1.6;">
+          ${message}
+        </p>
 
-    "รับประทานผักให้ได้ครึ่งจานในมื้อหลัก",
+        <button onclick="this.closest('div').parentElement.remove()"
+          style="
+            margin-top:18px;
+            width:100%;
+            border:none;
+            border-radius:14px;
+            padding:14px;
+            background:#1e88e5;
+            color:white;
+            font-size:16px;
+            font-weight:bold;
+          ">
+          เยี่ยมเลย!
+        </button>
 
-    "การเดินเพิ่มวันละ 2,000 ก้าว ช่วยลดความเสี่ยงโรคหัวใจ",
+      </div>
+    </div>
+  `;
 
-    "หายใจลึก ๆ 1 นาที ช่วยลดความเครียดระหว่างวัน",
-
-    "พักสายตาทุก 20 นาที เมื่อใช้หน้าจอต่อเนื่อง",
-
-    "เลือกบันไดแทนลิฟต์ ช่วยเพิ่มการเผาผลาญ",
-
-    "การนอน 7-9 ชั่วโมง ช่วยเสริมภูมิคุ้มกัน"
-  ];
-
-  const randomTip =
-    tips[Math.floor(Math.random()*tips.length)];
-
-  document.getElementById("healthTipText").innerText =
-    randomTip;
+  document.body.appendChild(popup);
 }
 
-async function loadUserRank(){
-
-  const data = await jsonp("getUserRank", {
-    userId: currentUserId
-  });
-
-  document.getElementById("userRank").innerText =
-    "🏆 Rank #" + data.rank + " / " + data.totalUsers;
-
-}
-  
 main();
 </script>
   
