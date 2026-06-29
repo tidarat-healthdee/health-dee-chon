@@ -1252,13 +1252,21 @@ function showRescuePopup(status){
   document.body.appendChild(popup);
 }
 
-function closeRescuePopup(){
+async function closeRescuePopup(){
 
   const popup = document.getElementById("rescuePopup");
 
   if(popup){
     popup.remove();
   }
+
+  const result = await jsonp("resetStreak", {
+    userId: currentUserId
+  });
+
+  localStorage.removeItem("homeData_v2_" + currentUserId);
+  await loadHomeData();
+
 }
 
 async function useFreezeToRescue(){
