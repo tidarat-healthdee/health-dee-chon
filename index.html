@@ -789,9 +789,16 @@ async function loadHomeData(){
   const cachedData = localStorage.getItem(cacheKey);
 
   if(cachedData){
-    latestHomeData = JSON.parse(cachedData);
-    renderHomeData(latestHomeData);
+  latestHomeData = JSON.parse(cachedData);
+  renderHomeData(latestHomeData);
+
+  if(
+    latestHomeData.rescueStatus &&
+    latestHomeData.rescueStatus.needRescue
+  ){
+    showRescuePopup(latestHomeData.rescueStatus);
   }
+}
 
   const data = await jsonp("getHomePageData", {
     userId: currentUserId
