@@ -1133,22 +1133,18 @@ async function showSuccess(points, diamonds, missionType){
 
   if(missionType == "weekly"){
 
-    const weekData = await jsonp("getCurrentWeek");
+  const rewardCheck = await jsonp("shouldShowWeeklyReward", {
+    userId: currentUserId
+  });
 
-    const currentWeek = Number(
-      weekData.week || weekData || 1
-    );
-
-    const rewardWeeks = [1,4,8,12];
-
-    if(rewardWeeks.includes(currentWeek)){
-      buttonHtml = `
-        <button onclick="closeSuccessModal(); showWeeklyRewardPopup();">
-          🎁 เปิดกล่องรางวัล
-        </button>
-      `;
-    }
+  if(rewardCheck.show){
+    buttonHtml = `
+      <button onclick="closeSuccessModal(); showWeeklyRewardPopup();">
+        🎁 เปิดกล่องรางวัล
+      </button>
+    `;
   }
+}
 
   document.getElementById("modalText").innerHTML =
     "ได้รับ ⭐ " + points + " คะแนน<br>" +
