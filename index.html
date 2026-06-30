@@ -625,30 +625,17 @@ hr{
     <div class="score-unit">
       WELLNESS POINTS
     </div>
-    <div id="userRank" class="user-rank">
-  🏆 Rank #1
-</div>
-
+    
   </div>
 
   <div class="score-right">
 
-    <div class="resource-item">
-      <span>🔥 Streak</span>
-      <b id="myStreak">0</b>
-    </div>
-
-    <div class="resource-item">
-      <span>🧊 Freeze</span>
-      <b id="myFreeze">0</b>
-    </div>
-
-    <div class="resource-item">
-      <span>💎 Diamonds</span>
-      <b id="myDiamonds">0</b>
-    </div>
-
+  <div class="resource-item">
+    <span>🔥 Streak</span>
+    <b id="myStreak">0</b>
   </div>
+
+</div>
 
 </div>
   
@@ -838,12 +825,6 @@ function updateScoreDisplay(score){
 
   document.getElementById("myStreak").innerText =
     score.streak || 0;
-
-  document.getElementById("myFreeze").innerText =
-    score.freeze || 0;
-
-  document.getElementById("myDiamonds").innerText =
-    score.diamonds || 0;
 
   updateLevel(Number(score.points || 0));
 }
