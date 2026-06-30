@@ -756,11 +756,7 @@ async function main(){
 
     renderWelcome(profile);
     await loadHomeData();
-
-    setTimeout(function(){
-      checkStreakRescue();
-    }, 800);
-
+    
   }catch(error){
     status.innerText = "ERROR: " + error.message;
   }
@@ -819,6 +815,9 @@ async function loadHomeData(){
   );
 
   renderHomeData(data);
+  if(data.rescueStatus && data.rescueStatus.needRescue){
+  showRescuePopup(data.rescueStatus);
+}
 }
 
 function renderHomeData(data){
