@@ -580,6 +580,48 @@ hr{
 .bottom-nav a:nth-child(4){
   color:#7e57c2;
 }
+
+.score-duo-card{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  padding:14px;
+  align-items:stretch;
+}
+
+.score-duo-item{
+  background:linear-gradient(135deg,#ffffff,#fff8f0);
+  border-radius:22px;
+  padding:18px 10px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+
+.score-duo-label{
+  font-size:13px;
+  font-weight:800;
+  color:#777;
+}
+
+.score-duo-number{
+  margin-top:8px;
+  font-size:42px;
+  font-weight:900;
+  color:#ff9800;
+  line-height:1;
+}
+
+.score-duo-sub{
+  margin-top:6px;
+  font-size:10px;
+  letter-spacing:1px;
+  font-weight:800;
+  color:#999;
+}
+
+.streak-box{
+  background:linear-gradient(135deg,#fff3e0,#ffffff);
+}
   
 </style>
 </head>
@@ -610,32 +652,39 @@ hr{
 <div class="hero">
   <div id="status" style="margin-top:16px;">กำลังเชื่อมต่อ LINE...</div>
 
-  <div class="card score-card">
+  <div class="card score-duo-card">
 
-  <div class="score-left">
+    <div class="score-duo-item">
 
-    <div class="score-label">
-      คะแนนของคุณ
+        <div class="score-duo-label">
+            คะแนนของคุณ
+        </div>
+
+        <div id="myPoints" class="score-duo-number">
+            0
+        </div>
+
+        <div class="score-duo-sub">
+            WELLNESS POINTS
+        </div>
+
     </div>
 
-    <div id="myPoints" class="score-number">
-      0
+    <div class="score-duo-item streak-box">
+
+        <div class="score-duo-label">
+            🔥 Streak
+        </div>
+
+        <div id="myStreak" class="score-duo-number">
+            0
+        </div>
+
+        <div class="score-duo-sub">
+            DAY STREAK
+        </div>
+
     </div>
-
-    <div class="score-unit">
-      WELLNESS POINTS
-    </div>
-    
-  </div>
-
-  <div class="score-right">
-
-  <div class="resource-item">
-    <span>🔥 Streak</span>
-    <b id="myStreak">0</b>
-  </div>
-
-</div>
 
 </div>
   
